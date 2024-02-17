@@ -8,6 +8,7 @@
 		"server"
 	],
 	"scripts": {
+		"dev": "",
 		"seed": "npx convex import --replace --table users sampleData/sampleUsers.jsonl && npx convex import --replace --table rooms sampleData/sampleRooms.jsonl && npx convex import --replace --table tracks sampleData/sampleTracks.jsonl"
 	},
 	"engines": {

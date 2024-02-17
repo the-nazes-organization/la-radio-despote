@@ -26,7 +26,9 @@ function Radio() {
           player.togglePlay();
           console.log(await player.getVolume());
         }}
-      ></button>
+      >
+        play
+      </button>
     </div>
   );
 }
