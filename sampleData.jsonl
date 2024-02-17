@@ -1,0 +1,4 @@
+{"room_id": "room1", "room_name": "Rock Room", "music_genre": "Rock", "current_song": "Sweet Child O' Mine", "listeners": 10}
+{"room_id": "room2", "room_name": "Pop Room", "music_genre": "Pop", "current_song": "Dance Monkey", "listeners": 5}
+{"room_id": "room3", "room_name": "Hip Hop Room", "music_genre": "Hip Hop", "current_song": "Old Town Road", "listeners": 8}
+{"room_id": "room4", "room_name": "EDM Room", "music_genre": "EDM", "current_song": "Wake Me Up", "listeners": 3}

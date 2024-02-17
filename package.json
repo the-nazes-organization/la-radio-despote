@@ -11,6 +11,7 @@
     "node": ">=20.0.0"
   },
   "resolutions": {},
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "convex": "^1.9.0"
+  }
 }
