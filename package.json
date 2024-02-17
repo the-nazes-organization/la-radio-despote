@@ -1,0 +1,16 @@
+{
+  "name": "la-radio-despote",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": false,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {},
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "resolutions": {},
+  "dependencies": {},
+  "devDependencies": {}
+}
