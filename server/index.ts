@@ -1,1 +1,1 @@
-export { api } from "./_generated/api";
+export { api } from './functions/_generated/api';
