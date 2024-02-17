@@ -13,7 +13,7 @@ function Radio() {
 
 	const { player } = useSpotifyPlayerContext();
 
-	const room = rooms?.find(room => room.room_id === params.radio);
+	const room = rooms?.find(room => room._id === params.radio);
 
 	return (
 		<div className="p-2">

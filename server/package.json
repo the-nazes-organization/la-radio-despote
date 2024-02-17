@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "convex dev",
-		"seed": "npx convex import --replace --table users sampleData/sampleUsers.jsonl && npx convex import --replace --table rooms sampleData/sampleRooms.jsonl && npx convex import --replace --table tracks sampleData/sampleTracks.jsonl"
+		"seed": "npx convex import --replace --table users sampleData/sampleUsers.jsonl && npx convex import --replace --table rooms sampleData/sampleRooms.jsonl"
 	},
 	"exports": {
 		".": "./index.ts"
