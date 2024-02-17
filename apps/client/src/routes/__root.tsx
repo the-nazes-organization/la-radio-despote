@@ -1,6 +1,6 @@
-import ConvexClientProvider from "@/lib/providers/ConvexProvider";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import ConvexClientProvider from "../lib/providers/ConvexProvider";
 
 export const Route = createRootRoute({
 	component: () => (
