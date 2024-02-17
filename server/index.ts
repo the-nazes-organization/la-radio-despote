@@ -1,3 +1,1 @@
-import { api } from "./_generated/api";
-
-export { api };
+export { api } from "./_generated/api";
