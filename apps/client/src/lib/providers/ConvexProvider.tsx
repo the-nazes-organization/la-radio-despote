@@ -5,9 +5,9 @@ import { ReactNode } from "react";
 const convex = new ConvexReactClient(import.meta.env.CONVEX_URL!);
 
 export default function ConvexClientProvider({
-	children,
+  children,
 }: {
-	children: ReactNode;
+  children: ReactNode;
 }) {
-	return <ConvexProvider client={convex}>{children}</ConvexProvider>;
+  return <ConvexProvider client={convex}>{children}</ConvexProvider>;
 }
