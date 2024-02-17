@@ -5,18 +5,21 @@
 	"type": "module",
 	"scripts": {
 		"dev": "dotenv -e ../server/.env.local vite",
-		"build": "dotenv -e ../server/.env.local vite build",
-		"seed:db:rooms": "npx convex import --table rooms ../../sampleData.jsonl"
+		"build": "dotenv -e ../server/.env.local vite build"
 	},
 	"resolutions": {},
 	"dependencies": {
 		"@clerk/clerk-react": "^4.30.5",
 		"@tanstack/react-router": "^1.16.5",
 		"@tanstack/router-devtools": "^1.16.5",
+		"class-variance-authority": "^0.7.0",
+		"clsx": "^2.1.0",
 		"convex": "^1.9.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"server": "*",
+		"tailwind-merge": "^2.2.1",
+		"tailwindcss-animate": "^1.0.7",
 		"zustand": "^4.5.1"
 	},
 	"devDependencies": {
@@ -25,7 +28,10 @@
 		"@types/react": "^18.2.56",
 		"@types/react-dom": "^18.2.19",
 		"@types/spotify-web-playback-sdk": "^0.1.19",
+		"autoprefixer": "^10.4.17",
 		"dotenv-cli": "^7.3.0",
+		"postcss": "^8.4.35",
+		"tailwindcss": "^3.4.1",
 		"vite": "^5.1.3"
 	}
 }

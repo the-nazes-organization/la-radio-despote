@@ -7,12 +7,13 @@ export const getRooms = query({
 		return await ctx.db.query('rooms').collect();
 	},
 });
+
 export const getRoomById = query({
 	args: { roomId: v.id('rooms') },
 	handler: async (ctx, args) => {
 		const room = await ctx.db
 			.query('rooms')
-			.filter(q => q.eq(q.field('_id'), args.roomId));
+			.filter(q => q.eq(q.field('_id'), args.roomId))
 		return room;
 	},
 });
