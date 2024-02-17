@@ -1,27 +1,22 @@
-import { ReactNode, createContext, useContext } from 'react';
-
 import { create } from 'zustand';
 
 interface SpotifyPlayerState {
 	player: Spotify.Player | null;
 	state: Spotify.PlaybackState | null;
+	deviceId: string | null;
 }
 
 export const useSpotifyPlayerStore = create<SpotifyPlayerState>()(set => ({
 	player: null,
 	state: null,
+	deviceId: null,
 }));
 
-const SpotifyPlayerContext = createContext<{
-	player: Spotify.Player;
-}>(null as any);
-
-export const useSpotifyPlayerContext = () => {
-	return useContext(SpotifyPlayerContext);
-};
-
+/**
+ * Initialize the Spotify Web Playback SDK
+ */
 window.onSpotifyWebPlaybackSDKReady = () => {
-	const player = new Spotify.Player({
+	const player = new window.Spotify.Player({
 		name: 'La Radio Despote',
 		getOAuthToken: cb => {
 			let token = sessionStorage.getItem('spotify_token');
@@ -45,6 +40,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 	// Ready
 	player.addListener('ready', ({ device_id }) => {
 		console.log('Ready with Device ID', device_id);
+		useSpotifyPlayerStore.setState({ deviceId: device_id });
 	});
 
 	// Not Ready
@@ -66,23 +62,3 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
 	player.connect();
 };
-
-export default function SpotifyPlayerProvider({
-	children,
-}: {
-	children: ReactNode;
-}) {
-	const player = useSpotifyPlayerStore(state => state.player);
-
-	if (!player) {
-		return '...';
-	}
-
-	return (
-		<SpotifyPlayerContext.Provider value={{ player }}>
-			{children}
-
-			<div className="absolute"></div>
-		</SpotifyPlayerContext.Provider>
-	);
-}

@@ -1,7 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useQuery } from 'convex/react';
+import { useEffect } from 'react';
 import { api } from 'server';
-import { useSpotifyPlayerContext } from '../../lib/providers/SpotifyPlayerProvider';
+import { useSpotifyPlayerStore } from '../../lib/providers/SpotifyPlayerProvider';
+
+import { useSpotifyApiStore } from '@/lib/providers/SpotifyApiProvider';
 
 export const Route = createFileRoute('/$radio/')({
 	component: Radio,
@@ -9,11 +12,21 @@ export const Route = createFileRoute('/$radio/')({
 
 function Radio() {
 	const params = Route.useParams();
-	const rooms = useQuery(api.rooms.getRooms);
+	const room = useQuery(api.rooms.getRoomById, {
+		roomId: params.radio as any,
+	});
 
-	const { player } = useSpotifyPlayerContext();
+	const player = useSpotifyPlayerStore();
+	const { spotifyApi } = useSpotifyApiStore();
 
-	const room = rooms?.find(room => room._id === params.radio);
+	useEffect(() => {
+		if (player.deviceId && room) {
+			spotifyApi.play({
+				device_id: player.deviceId,
+				uris: [`spotify:track:${room.tracks[0].spotifyId}`],
+			});
+		}
+	}, [player.deviceId, room]);
 
 	return (
 		<div className="p-2">
@@ -23,8 +36,7 @@ function Radio() {
 
 			<button
 				onClick={async () => {
-					player.togglePlay();
-					console.log(await player.getVolume());
+					console.log(await player.player!.getVolume());
 				}}
 			>
 				play
