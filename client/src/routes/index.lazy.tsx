@@ -1,6 +1,7 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+
+import { api } from "server";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -15,7 +16,7 @@ function Index() {
       {rooms?.map((room) => (
         <div key={room.room_id} className="p-2 border rounded">
           <h4>{room.room_name}</h4>
-          <p>{room.description}</p>
+          <p>{room._creationTime}</p>
 
           <div className="flex gap-2">
             <button className="bg-blue-500 text-white rounded p-2">Join</button>
