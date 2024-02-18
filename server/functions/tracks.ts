@@ -3,21 +3,21 @@ import { internalMutation, mutation } from './_generated/server';
 
 export const addTrack = mutation({
 	args: {
-		asked_by: v.id('users'),
+		askedBy: v.id('users'),
 		duration: v.number(),
-		played_at: v.optional(v.number()),
-		asked_at: v.number(),
+		playedAt: v.optional(v.number()),
+		askedAt: v.number(),
 		room: v.id('rooms'),
-		spotifyId: v.string(),
+		spotifyTrackDataId: v.id('spotifyTrackData'),
 	},
 	handler: async (ctx, args) => {
 		return ctx.db.insert('tracks', {
-			asked_by: args.asked_by,
-			asked_at: args.asked_at,
+			askedBy: args.askedBy,
+			askedAt: args.askedAt,
 			duration: args.duration,
 			room: args.room,
-			spotifyId: args.spotifyId,
-			played_at: args.played_at,
+			spotifyTrackDataId: args.spotifyTrackDataId,
+			playedAt: args.playedAt,
 		});
 	},
 });

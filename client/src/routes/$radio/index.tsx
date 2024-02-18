@@ -26,8 +26,8 @@ function Radio() {
 	useEffect(() => {
 		if (player.deviceId && playing) {
 			player.actions.play({
-				spotifyId: playing.spotifyId,
-				startedAt: playing.played_at!,
+				spotifyId: playing.spotifyTrackData!.spotifyId,
+				startedAt: playing.playedAt!,
 			});
 		}
 

@@ -12,11 +12,23 @@ export const getRoomById = query({
 	args: { roomId: v.id('rooms') },
 	handler: async (ctx, args) => {
 		const [room, tracks] = await Promise.all([
-			await ctx.db.get(args.roomId),
-			await ctx.db
-				.query('tracks')
-				.filter(q => q.eq(q.field('room'), args.roomId))
-				.take(100),
+			ctx.db.get(args.roomId),
+			Promise.all(
+				await ctx.db
+					.query('tracks')
+					.filter(q => q.eq(q.field('room'), args.roomId))
+					.collect()
+					.then(tracks =>
+						tracks.map(async track => {
+							const [spotifyTrackData, askedBy] = await Promise.all([
+								ctx.db.get(track.spotifyTrackDataId),
+								ctx.db.get(track.askedBy),
+							]);
+
+							return { ...track, spotifyTrackData, askedBy };
+						}),
+					),
+			),
 		]);
 
 		return {
