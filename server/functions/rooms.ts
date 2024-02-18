@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { query } from './_generated/server';
+import { internalMutation, mutation, query } from './_generated/server';
 
 export const getRooms = query({
 	args: {},
@@ -34,4 +34,19 @@ export const getRoomTracks = query({
 			.filter(q => q.eq(q.field('room'), args.roomId));
 		return tracks;
 	},
+});
+
+export const addRoom = mutation({
+	args: { name: v.string() },
+	handler: async (ctx, args) => {
+		return ctx.db.insert('rooms', {
+			name: args.name,
+			listeners: [],
+		});
+	},
+});
+
+export const deleteAllRooms = internalMutation(async ctx => {
+	const rooms = await ctx.db.query('rooms').collect();
+	await Promise.all(rooms.map(room => ctx.db.delete(room._id)));
 });
