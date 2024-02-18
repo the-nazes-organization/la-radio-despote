@@ -12,7 +12,10 @@
 	},
 	"resolutions": {},
 	"dependencies": {
+		"@spotify/web-api-ts-sdk": "^1.2.0",
 		"convex": "^1.9.0"
 	},
-	"devDependencies": {}
+	"devDependencies": {
+		"@types/node": "^20.11.19"
+	}
 }

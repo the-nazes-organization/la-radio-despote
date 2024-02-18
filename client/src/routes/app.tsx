@@ -6,7 +6,6 @@ import { api } from 'server';
 
 export const Route = createFileRoute('/app')({
 	loader: () => preloadQuery(api.rooms.getRooms, {}),
-
 	component: LayoutComponent,
 });
 

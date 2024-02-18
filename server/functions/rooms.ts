@@ -22,7 +22,7 @@ export const getRoomById = query({
 						tracks.map(async track => {
 							const [spotifyTrackData, askedBy] = await Promise.all([
 								ctx.db.get(track.spotifyTrackDataId),
-								ctx.db.get(track.askedBy),
+								track.askedBy ? ctx.db.get(track.askedBy) : null,
 							]);
 
 							return { ...track, spotifyTrackData, askedBy };

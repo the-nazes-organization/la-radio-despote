@@ -8,7 +8,8 @@ export default defineSchema({
 	}),
 
 	tracks: defineTable({
-		askedBy: v.id('users'),
+		// todo remove optional here
+		askedBy: v.optional(v.id('users')),
 		askedAt: v.number(),
 		playedAt: v.optional(v.number()),
 		duration: v.number(),
