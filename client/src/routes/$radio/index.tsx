@@ -1,32 +1,39 @@
+import { preloadQuery } from '@/lib/preload-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useQuery } from 'convex/react';
+import { usePreloadedQuery } from 'convex/react';
 import { useEffect } from 'react';
 import { api } from 'server';
+import { Id } from 'server/functions/_generated/dataModel';
 import { useSpotifyPlayerStore } from '../../lib/providers/SpotifyPlayerProvider';
 
-import { useSpotifyApiStore } from '@/lib/providers/SpotifyApiProvider';
-
 export const Route = createFileRoute('/$radio/')({
+	loader: ({ params: { radio } }) =>
+		preloadQuery(api.rooms.getRoomById, { roomId: radio as Id<'rooms'> }),
+
 	component: Radio,
 });
 
 function Radio() {
 	const params = Route.useParams();
-	const room = useQuery(api.rooms.getRoomById, {
-		roomId: params.radio as any,
-	});
+
+	const room = usePreloadedQuery(Route.useLoaderData());
 
 	const player = useSpotifyPlayerStore();
-	const { spotifyApi } = useSpotifyApiStore();
+
+	const playing = room?.tracks[0] ?? null;
 
 	useEffect(() => {
-		if (player.deviceId && room) {
-			spotifyApi.play({
-				device_id: player.deviceId,
-				uris: [`spotify:track:${room.tracks[0].spotifyId}`],
+		if (player.deviceId && playing) {
+			player.actions.play({
+				spotifyId: playing.spotifyId,
+				startedAt: playing.played_at!,
 			});
 		}
-	}, [player.deviceId, room]);
+
+		return () => {
+			player.player!.pause();
+		};
+	}, [player.deviceId, playing]);
 
 	return (
 		<div className="p-2">
