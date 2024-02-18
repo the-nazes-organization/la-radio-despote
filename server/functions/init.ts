@@ -21,7 +21,7 @@ export const seedDatabase = internalMutation(async ctx => {
 		password: 'password',
 	});
 
-	await addRoom(ctx, { name: 'Room 1' });
+	await addRoom(ctx, { name: 'Bamboche Radio' });
 	await addRoom(ctx, { name: 'Room 2' });
 	await addRoom(ctx, { name: 'Room 3' });
 

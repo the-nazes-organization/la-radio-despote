@@ -38,7 +38,7 @@ function Radio() {
 
 	return (
 		<div className="p-2">
-			<TypographyH1>Welcome in the radio {room.room?.name}!</TypographyH1>
+			<TypographyH1>{room.room?.name}</TypographyH1>
 
 			<pre>{JSON.stringify(room, null, 2)}</pre>
 
