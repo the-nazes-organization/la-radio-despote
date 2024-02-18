@@ -1,10 +1,11 @@
 import { preloadQuery } from '@/lib/preload-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { usePreloadedQuery } from 'convex/react';
 import { useEffect } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
 import { useSpotifyPlayerStore } from '../../lib/providers/SpotifyPlayerProvider';
+import { usePreloadedQuery } from 'convex/react';
+import { TypographyH1 } from '@/components/typography';
 
 export const Route = createFileRoute('/$radio/')({
 	loader: ({ params: { radio } }) =>
@@ -37,7 +38,7 @@ function Radio() {
 
 	return (
 		<div className="p-2">
-			<h3>Welcome in the radio {params.radio}!</h3>
+			<TypographyH1>Welcome in the radio {room.room?.name}!</TypographyH1>
 
 			<pre>{JSON.stringify(room, null, 2)}</pre>
 

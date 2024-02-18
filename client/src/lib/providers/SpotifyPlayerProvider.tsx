@@ -29,7 +29,7 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 
 				if (!token) {
 					token = prompt('give token pls')!;
-					sessionStorage.setItem('spotify_token', token);
+					if (token) sessionStorage.setItem('spotify_token', token);
 				}
 
 				cb(token);

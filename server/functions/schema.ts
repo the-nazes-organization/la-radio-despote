@@ -10,6 +10,7 @@ export default defineSchema({
 	tracks: defineTable({
 		_id: v.string(),
 		asked_by: v.id('users'),
+		asked_at: v.number(),
 		played_at: v.optional(v.number()),
 		duration: v.number(),
 		room: v.id('rooms'),
