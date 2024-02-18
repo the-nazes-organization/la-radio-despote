@@ -1,44 +1,39 @@
 import { internalMutation } from './_generated/server';
-import { addRoom, deleteAllRooms, getRooms } from './rooms';
-import { addTrack, deleteAllTracks } from './tracks';
-import { addUser, deleteAllUsers, getUsers } from './users';
 
-export const emptyDatabase = internalMutation(async ctx => {
-	await deleteAllUsers(ctx, {});
-	await deleteAllRooms(ctx, {});
-	await deleteAllTracks(ctx, {});
-
-	await Promise.all(
-		await ctx.db
-			.query('spotifyTrackData')
-			.collect()
-			.then(docs => docs.map(doc => ctx.db.delete(doc._id))),
+export const drop = internalMutation(async ctx => {
+	return Promise.all(
+		(['tracks', 'spotifyTrackData', 'rooms', 'users'] as const).map(
+			async table => {
+				return Promise.all(
+					await ctx.db
+						.query(table)
+						.collect()
+						.then(docs => docs.map(doc => ctx.db.delete(doc._id))),
+				);
+			},
+		),
 	);
 });
 
-export const seedDatabase = internalMutation(async ctx => {
-	await addUser(ctx, {
+export const seed = internalMutation(async ctx => {
+	const max = await ctx.db.insert('users', {
 		username: 'max',
 		email: 'max@example.com',
 		password: 'password',
 	});
-	await addUser(ctx, {
+
+	await ctx.db.insert('users', {
 		username: 'ben',
 		email: 'ben@example.com',
 		password: 'password',
 	});
 
-	await addRoom(ctx, { name: 'Bamboche Radio' });
-	await addRoom(ctx, { name: 'Room 2' });
-	await addRoom(ctx, { name: 'Room 3' });
+	const room = await ctx.db.insert('rooms', {
+		name: 'Bamboche Radio',
+		listeners: [],
+	});
 
-	const rooms = await getRooms(ctx, {});
-	const users = await getUsers(ctx, {});
-	if (!rooms || !users) {
-		return;
-	}
-
-	const trackData = await ctx.db.insert('spotifyTrackData', {
+	const sampleTrackData = await ctx.db.insert('spotifyTrackData', {
 		album: {
 			id: '1F6pbvvDZVFepqnD3nnVI7',
 			images: [
@@ -73,14 +68,12 @@ export const seedDatabase = internalMutation(async ctx => {
 			'https://p.scdn.co/mp3-preview/aed5ad751421daa9d749cb3e42ce7adbb73037e0?cid=2a67b948aa004e08afb92cb34295ce86',
 	});
 
-	await addTrack(ctx, {
-		askedBy: users[0]._id,
+	await ctx.db.insert('tracks', {
+		askedBy: max,
 		duration: 100,
-		room: rooms[0]._id,
-		spotifyTrackDataId: trackData,
+		room,
+		spotifyTrackDataId: sampleTrackData,
 		playedAt: Date.now(),
 		askedAt: Date.now() - 5400 * 1000,
 	});
-
-	return;
 });

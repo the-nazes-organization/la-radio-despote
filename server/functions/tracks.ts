@@ -1,7 +1,10 @@
 import { v } from 'convex/values';
-import { internalMutation, mutation } from './_generated/server';
+import { internalMutation } from './_generated/server';
 
-export const addTrack = mutation({
+/**
+ * Adds a track to the queue of a room.
+ */
+export const addTrackToQueue = internalMutation({
 	args: {
 		askedBy: v.optional(v.id('users')),
 		duration: v.number(),
@@ -22,7 +25,10 @@ export const addTrack = mutation({
 	},
 });
 
-export const saveTrackData = internalMutation({
+/**
+ * Stores the spotify track data for a track.
+ */
+export const saveSpotifyTrackData = internalMutation({
 	args: {
 		duration: v.number(),
 		name: v.string(),
@@ -48,37 +54,13 @@ export const saveTrackData = internalMutation({
 	},
 
 	handler: async (ctx, args) => {
-		return ctx.db.insert('spotifyTrackData', args);
+		const existing = await ctx.db
+			.query('spotifyTrackData')
+			.filter(q => q.eq(q.field('spotifyId'), args.spotifyId))
+			.unique();
+
+		return existing
+			? ctx.db.patch(existing._id, args).then(() => existing._id)
+			: ctx.db.insert('spotifyTrackData', args);
 	},
-});
-
-export const saveTrack = internalMutation(async ctx => {
-	const track = await ctx.db.insert('spotifyTrackData', {
-		duration: 1000,
-		name: 'track name',
-		spotifyId: 'spotifyId',
-		artists: [
-			{
-				id: 'artistId',
-				name: 'artist name',
-			},
-		],
-		album: {
-			id: 'albumId',
-			name: 'album name',
-			images: [
-				{
-					url: 'image url',
-					height: 100,
-					width: 100,
-				},
-			],
-		},
-		previewUrl: 'preview url',
-	});
-});
-
-export const deleteAllTracks = internalMutation(async ctx => {
-	const tracks = await ctx.db.query('tracks').collect();
-	await Promise.all(tracks.map(track => ctx.db.delete(track._id)));
 });

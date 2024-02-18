@@ -5,7 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "convex dev",
-		"seed": "npx convex run init:emptyDatabase && npx convex run init:seedDatabase"
+		"convex": "convex",
+		"seed": "npx convex run dev:drop && npx convex run dev:seed"
 	},
 	"exports": {
 		".": "./index.ts"

@@ -3,7 +3,7 @@ import { FunctionReturnType } from 'convex/server';
 import { Headphones } from 'lucide-react';
 
 interface NavbarProps {
-	rooms: FunctionReturnType<typeof import('server').api.rooms.getRooms>;
+	rooms: FunctionReturnType<typeof import('server').api.rooms.list>;
 }
 
 export const Navbar = ({ rooms }: NavbarProps) => {

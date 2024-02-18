@@ -5,7 +5,7 @@ import { usePreloadedQuery } from 'convex/react';
 import { api } from 'server';
 
 export const Route = createFileRoute('/app')({
-	loader: () => preloadQuery(api.rooms.getRooms, {}),
+	loader: () => preloadQuery(api.rooms.list, {}),
 	component: LayoutComponent,
 });
 
