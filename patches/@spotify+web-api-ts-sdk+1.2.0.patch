@@ -1,0 +1,74 @@
+diff --git a/node_modules/@spotify/web-api-ts-sdk/dist/cjs/endpoints/PlayerEndpoints.d.ts b/node_modules/@spotify/web-api-ts-sdk/dist/cjs/endpoints/PlayerEndpoints.d.ts
+index 52792b8..9f4814f 100644
+--- a/node_modules/@spotify/web-api-ts-sdk/dist/cjs/endpoints/PlayerEndpoints.d.ts
++++ b/node_modules/@spotify/web-api-ts-sdk/dist/cjs/endpoints/PlayerEndpoints.d.ts
+@@ -11,7 +11,7 @@ export default class PlayerEndpoints extends EndpointsBase {
+     getRecentlyPlayedTracks(limit?: MaxInt<50>, queryRange?: QueryRange): Promise<RecentlyPlayedTracksPage>;
+     getUsersQueue(): Promise<Queue>;
+     transferPlayback(device_ids: string[], play?: boolean): Promise<void>;
+-    startResumePlayback(device_id: string, context_uri?: string, uris?: string[], offset?: object, positionMs?: number): Promise<void>;
++    startResumePlayback(device_id: string, context_uri?: string, uris?: string[], offset?: object, position_ms?: number): Promise<void>;
+     pausePlayback(device_id: string): Promise<void>;
+     skipToNext(device_id: string): Promise<void>;
+     skipToPrevious(device_id: string): Promise<void>;
+diff --git a/node_modules/@spotify/web-api-ts-sdk/dist/cjs/endpoints/PlayerEndpoints.js b/node_modules/@spotify/web-api-ts-sdk/dist/cjs/endpoints/PlayerEndpoints.js
+index ec937df..8a7bc8f 100644
+--- a/node_modules/@spotify/web-api-ts-sdk/dist/cjs/endpoints/PlayerEndpoints.js
++++ b/node_modules/@spotify/web-api-ts-sdk/dist/cjs/endpoints/PlayerEndpoints.js
+@@ -38,9 +38,9 @@ class PlayerEndpoints extends EndpointsBase_js_1.default {
+         }
+         await this.putRequest('me/player', { device_ids, play });
+     }
+-    async startResumePlayback(device_id, context_uri, uris, offset, positionMs) {
++    async startResumePlayback(device_id, context_uri, uris, offset, position_ms) {
+         const params = this.paramsFor({ device_id });
+-        await this.putRequest(`me/player/play${params}`, { context_uri, uris, offset, positionMs });
++        await this.putRequest(`me/player/play${params}`, { context_uri, uris, offset, position_ms });
+     }
+     async pausePlayback(device_id) {
+         const params = this.paramsFor({ device_id });
+diff --git a/node_modules/@spotify/web-api-ts-sdk/dist/mjs/endpoints/PlayerEndpoints.d.ts b/node_modules/@spotify/web-api-ts-sdk/dist/mjs/endpoints/PlayerEndpoints.d.ts
+index 52792b8..9f4814f 100644
+--- a/node_modules/@spotify/web-api-ts-sdk/dist/mjs/endpoints/PlayerEndpoints.d.ts
++++ b/node_modules/@spotify/web-api-ts-sdk/dist/mjs/endpoints/PlayerEndpoints.d.ts
+@@ -11,7 +11,7 @@ export default class PlayerEndpoints extends EndpointsBase {
+     getRecentlyPlayedTracks(limit?: MaxInt<50>, queryRange?: QueryRange): Promise<RecentlyPlayedTracksPage>;
+     getUsersQueue(): Promise<Queue>;
+     transferPlayback(device_ids: string[], play?: boolean): Promise<void>;
+-    startResumePlayback(device_id: string, context_uri?: string, uris?: string[], offset?: object, positionMs?: number): Promise<void>;
++    startResumePlayback(device_id: string, context_uri?: string, uris?: string[], offset?: object, position_ms?: number): Promise<void>;
+     pausePlayback(device_id: string): Promise<void>;
+     skipToNext(device_id: string): Promise<void>;
+     skipToPrevious(device_id: string): Promise<void>;
+diff --git a/node_modules/@spotify/web-api-ts-sdk/dist/mjs/endpoints/PlayerEndpoints.js b/node_modules/@spotify/web-api-ts-sdk/dist/mjs/endpoints/PlayerEndpoints.js
+index 9d97505..c993041 100644
+--- a/node_modules/@spotify/web-api-ts-sdk/dist/mjs/endpoints/PlayerEndpoints.js
++++ b/node_modules/@spotify/web-api-ts-sdk/dist/mjs/endpoints/PlayerEndpoints.js
+@@ -33,9 +33,9 @@ export default class PlayerEndpoints extends EndpointsBase {
+         }
+         await this.putRequest('me/player', { device_ids, play });
+     }
+-    async startResumePlayback(device_id, context_uri, uris, offset, positionMs) {
++    async startResumePlayback(device_id, context_uri, uris, offset, position_ms) {
+         const params = this.paramsFor({ device_id });
+-        await this.putRequest(`me/player/play${params}`, { context_uri, uris, offset, positionMs });
++        await this.putRequest(`me/player/play${params}`, { context_uri, uris, offset, position_ms });
+     }
+     async pausePlayback(device_id) {
+         const params = this.paramsFor({ device_id });
+diff --git a/node_modules/@spotify/web-api-ts-sdk/src/endpoints/PlayerEndpoints.ts b/node_modules/@spotify/web-api-ts-sdk/src/endpoints/PlayerEndpoints.ts
+index c468acc..deab8d9 100644
+--- a/node_modules/@spotify/web-api-ts-sdk/src/endpoints/PlayerEndpoints.ts
++++ b/node_modules/@spotify/web-api-ts-sdk/src/endpoints/PlayerEndpoints.ts
+@@ -48,9 +48,9 @@ export default class PlayerEndpoints extends EndpointsBase {
+         await this.putRequest('me/player', { device_ids, play });
+     }
+ 
+-    public async startResumePlayback(device_id: string, context_uri?: string, uris?: string[], offset?: object, positionMs?: number) {
++    public async startResumePlayback(device_id: string, context_uri?: string, uris?: string[], offset?: object, position_ms?: number) {
+         const params = this.paramsFor({ device_id });
+-        await this.putRequest(`me/player/play${params}`, { context_uri, uris, offset, positionMs });
++        await this.putRequest(`me/player/play${params}`, { context_uri, uris, offset, position_ms });
+     }
+ 
+     public async pausePlayback(device_id: string) {

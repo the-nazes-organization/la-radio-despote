@@ -1,6 +1,6 @@
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
+import { differenceInMilliseconds, differenceInSeconds } from 'date-fns';
 import { create } from 'zustand';
-import { sleep } from '../sleep';
 
 interface SpotifyPlayerState {
 	sdk: SpotifyApi;
@@ -8,7 +8,7 @@ interface SpotifyPlayerState {
 	state: Spotify.PlaybackState | null;
 	deviceId: string | null;
 	actions: {
-		play: (args: { spotifyId: string; startedAt: number }) => void;
+		play: (args: { spotifyId: string; playedAt: number }) => void;
 	};
 }
 
@@ -47,7 +47,7 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 					}
 				});
 			},
-			volume: 0.2,
+			// volume: 1,
 		});
 
 		set({ player });
@@ -86,10 +86,17 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 		state: null,
 		deviceId: null,
 		actions: {
-			async play({ spotifyId, startedAt }) {
-				await sdk.player.startResumePlayback(get().deviceId!, undefined, [
-					`spotify:track:${spotifyId}`,
-				]);
+			async play({ spotifyId, playedAt }) {
+				const diff = differenceInMilliseconds(new Date(), new Date(playedAt));
+
+				await sdk.player.startResumePlayback(
+					get().deviceId!,
+					undefined,
+					[`spotify:track:${spotifyId}`],
+					undefined,
+					diff,
+				);
+
 			},
 			pause() {
 				return get().player?.pause();

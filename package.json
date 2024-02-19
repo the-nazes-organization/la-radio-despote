@@ -10,16 +10,19 @@
 	"scripts": {
 		"dev": "concurrently 'yarn workspace client dev' 'yarn workspace server dev'",
 		"dev:tauri": "concurrently 'yarn workspace client tauri dev' 'yarn workspace server dev'",
-		"seed": "npx convex import --replace --table users sampleData/sampleUsers.jsonl && npx convex import --replace --table rooms sampleData/sampleRooms.jsonl && npx convex import --replace --table tracks sampleData/sampleTracks.jsonl"
+		"seed": "npx convex import --replace --table users sampleData/sampleUsers.jsonl && npx convex import --replace --table rooms sampleData/sampleRooms.jsonl && npx convex import --replace --table tracks sampleData/sampleTracks.jsonl",
+		"postinstall": "patch-package"
 	},
 	"engines": {
 		"node": ">=20.0.0"
 	},
 	"resolutions": {},
 	"dependencies": {
+		"@spotify/web-api-ts-sdk": "^1.2.0",
 		"convex": "^1.9.0"
 	},
 	"devDependencies": {
-		"concurrently": "^8.2.2"
+		"concurrently": "^8.2.2",
+		"patch-package": "^8.0.0"
 	}
 }
