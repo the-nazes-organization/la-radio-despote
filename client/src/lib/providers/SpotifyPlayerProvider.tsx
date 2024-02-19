@@ -2,6 +2,7 @@ import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import { create } from 'zustand';
 
 interface SpotifyPlayerState {
+	sdk: SpotifyApi;
 	player: Spotify.Player | null;
 	state: Spotify.PlaybackState | null;
 	deviceId: string | null;
@@ -16,7 +17,7 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 ) => {
 	const sdk = SpotifyApi.withUserAuthorization(
 		import.meta.env.VITE_SPOTIFY_CLIENT_ID,
-		'http://localhost:5173',
+		'http://localhost:5173/login',
 		[
 			'user-read-email',
 			'user-read-private',
@@ -30,16 +31,20 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 		],
 	);
 
-	sdk.authenticate();
+	// sdk.authenticate();
 
 	/**
 	 * Initialize the Spotify Web Playback SDK
 	 */
-	window.onSpotifyWebPlaybackSDKReady = () => {
+	window.onSpotifyWebPlaybackSDKReady = async () => {
 		const player = new window.Spotify.Player({
 			name: 'La Radio Despote',
 			getOAuthToken: async cb => {
-				sdk.getAccessToken().then(token => cb(token!.access_token));
+				sdk.getAccessToken().then(token => {
+					if (token) {
+						cb(token.access_token);
+					}
+				});
 			},
 			volume: 0.2,
 		});
@@ -75,7 +80,7 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 	};
 
 	return {
-		api: sdk,
+		sdk,
 		player: null,
 		state: null,
 		deviceId: null,

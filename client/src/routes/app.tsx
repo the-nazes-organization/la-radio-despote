@@ -5,12 +5,29 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { preloadQuery } from '@/lib/preload-query';
-import { Link, Outlet, createFileRoute } from '@tanstack/react-router';
+import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
+import {
+	Link,
+	Outlet,
+	createFileRoute,
+	redirect,
+} from '@tanstack/react-router';
 import { usePreloadedQuery } from 'convex/react';
 import { Home, Music } from 'lucide-react';
 import { api } from 'server';
 
 export const Route = createFileRoute('/app')({
+	async beforeLoad(opts) {
+		const store = useSpotifyPlayerStore.getState();
+
+		const isAuthed = await store.sdk.getAccessToken();
+
+		if (!isAuthed) {
+			throw redirect({
+				to: '/login',
+			});
+		}
+	},
 	loader: () => preloadQuery(api.rooms.list, {}),
 	component: LayoutComponent,
 });
@@ -28,7 +45,7 @@ function LayoutComponent() {
 				<hr className="w-1/2" />
 
 				{rooms.map(room => (
-					<Tooltip>
+					<Tooltip key={room._id}>
 						<TooltipTrigger>
 							<Link
 								key={room._id}
