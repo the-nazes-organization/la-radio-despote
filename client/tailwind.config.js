@@ -1,3 +1,5 @@
+import plugin from 'tailwindcss/plugin';
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	darkMode: ['class'],
@@ -21,8 +23,8 @@ module.exports = {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
-				background: 'var(--background)',
-				'background-base': 'var(--background-base)',
+				background: 'hsl(var(--background))',
+				'background-base': 'hsl(var(--background-base))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
@@ -74,5 +76,20 @@ module.exports = {
 			},
 		},
 	},
-	plugins: [require('tailwindcss-animate')],
+	plugins: [
+		require('tailwindcss-animate'),
+		plugin(function ({ matchUtilities, theme }) {
+			// addVariant('hocus', ['&:hover', '&:focus']);
+			// Square utility
+			matchUtilities(
+				{
+					square: value => ({
+						width: value,
+						height: value,
+					}),
+				},
+				{ values: theme('spacing') },
+			);
+		}),
+	],
 };

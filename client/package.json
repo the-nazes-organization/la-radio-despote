@@ -11,6 +11,8 @@
 	"dependencies": {
 		"@clerk/clerk-react": "^4.30.5",
 		"@radix-ui/react-slot": "^1.0.2",
+		"@radix-ui/react-tooltip": "^1.0.7",
+		"@spotify/web-api-ts-sdk": "^1.2.0",
 		"@tanstack/react-router": "^1.16.5",
 		"@tanstack/router-devtools": "^1.16.5",
 		"class-variance-authority": "^0.7.0",
@@ -20,7 +22,6 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"server": "*",
-		"spotify-web-api-js": "^1.5.2",
 		"tailwind-merge": "^2.2.1",
 		"tailwindcss-animate": "^1.0.7",
 		"zustand": "^4.5.1"

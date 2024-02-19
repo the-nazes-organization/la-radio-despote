@@ -1,18 +1,16 @@
 import { internalMutation } from './_generated/server';
 
 export const drop = internalMutation(async ctx => {
-	return Promise.all(
-		(['tracks', 'spotifyTrackData', 'rooms', 'users'] as const).map(
-			async table => {
-				return Promise.all(
-					await ctx.db
-						.query(table)
-						.collect()
-						.then(docs => docs.map(doc => ctx.db.delete(doc._id))),
-				);
-			},
-		),
-	);
+	for (const table of [
+		'tracks',
+		'spotifyTrackData',
+		'rooms',
+		'users',
+	] as const) {
+		const docs = await ctx.db.query(table).collect();
+
+		await Promise.all(docs.map(doc => ctx.db.delete(doc._id)));
+	}
 });
 
 export const seed = internalMutation(async ctx => {
@@ -30,6 +28,11 @@ export const seed = internalMutation(async ctx => {
 
 	const room = await ctx.db.insert('rooms', {
 		name: 'Bamboche Radio',
+		listeners: [],
+	});
+
+	const discoRadio = await ctx.db.insert('rooms', {
+		name: 'Disco Radio',
 		listeners: [],
 	});
 
@@ -72,6 +75,15 @@ export const seed = internalMutation(async ctx => {
 		askedBy: max,
 		duration: 100,
 		room,
+		spotifyTrackDataId: sampleTrackData,
+		playedAt: Date.now(),
+		askedAt: Date.now() - 5400 * 1000,
+	});
+
+	await ctx.db.insert('tracks', {
+		askedBy: max,
+		duration: 100,
+		room: discoRadio,
 		spotifyTrackDataId: sampleTrackData,
 		playedAt: Date.now(),
 		askedAt: Date.now() - 5400 * 1000,

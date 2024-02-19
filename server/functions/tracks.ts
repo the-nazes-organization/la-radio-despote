@@ -56,7 +56,7 @@ export const saveSpotifyTrackData = internalMutation({
 	handler: async (ctx, args) => {
 		const existing = await ctx.db
 			.query('spotifyTrackData')
-			.filter(q => q.eq(q.field('spotifyId'), args.spotifyId))
+			.withIndex('by_spotify_id', q => q.eq('spotifyId', args.spotifyId))
 			.unique();
 
 		return existing

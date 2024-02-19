@@ -16,7 +16,9 @@ export default defineSchema(
 			duration: v.number(),
 			room: v.id('rooms'),
 			spotifyTrackDataId: v.id('spotifyTrackData'),
-		}).index('by_played_at', ['playedAt']),
+		})
+			.index('by_room_played_at', ['room', 'playedAt'])
+			.index('by_played_at', ['playedAt']),
 
 		spotifyTrackData: defineTable({
 			duration: v.number(),
@@ -48,6 +50,7 @@ export default defineSchema(
 			password: v.string(),
 		}),
 	},
+
 	{
 		schemaValidation: false,
 	},

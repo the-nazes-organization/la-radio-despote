@@ -7,7 +7,26 @@ import { query } from './_generated/server';
 export const list = query({
 	args: {},
 	handler: async ctx => {
-		return ctx.db.query('rooms').take(100);
+		const rooms = await ctx.db.query('rooms').take(100);
+
+		return Promise.all(
+			rooms.map(async room => {
+				const playingTrack = await ctx.db
+					.query('tracks')
+					.withIndex('by_room_played_at', q => q.eq('room', room._id))
+					.order('desc')
+					.first();
+
+				const spotifyTrackData = await ctx.db.get(
+					playingTrack!.spotifyTrackDataId,
+				);
+
+				return {
+					...room,
+					playing: { ...playingTrack, spotifyTrackData: spotifyTrackData! },
+				};
+			}),
+		);
 	},
 });
 
@@ -17,12 +36,16 @@ export const list = query({
 export const get = query({
 	args: { roomId: v.id('rooms') },
 	handler: async (ctx, args) => {
-		const [room, tracks] = await Promise.all([
+		const [details, tracks] = await Promise.all([
 			ctx.db.get(args.roomId),
+
 			Promise.all(
 				await ctx.db
 					.query('tracks')
-					.filter(q => q.eq(q.field('room'), args.roomId))
+
+					.withIndex('by_room_played_at', q => q.eq('room', args.roomId))
+					.order('desc')
+
 					.collect()
 					.then(tracks =>
 						tracks.map(async track => {
@@ -31,15 +54,20 @@ export const get = query({
 								track.askedBy ? ctx.db.get(track.askedBy) : null,
 							]);
 
-							return { ...track, spotifyTrackData, askedBy };
+							return {
+								...track,
+								spotifyTrackData: spotifyTrackData!,
+								askedBy,
+							};
 						}),
 					),
 			),
 		]);
 
 		return {
-			room,
+			details: details!,
 			tracks,
+			playing: tracks[0],
 		};
 	},
 });

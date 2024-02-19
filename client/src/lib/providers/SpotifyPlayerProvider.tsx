@@ -1,4 +1,4 @@
-import SpotifyWebApi from 'spotify-web-api-js';
+import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import { create } from 'zustand';
 
 interface SpotifyPlayerState {
@@ -14,9 +14,23 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 	set,
 	get,
 ) => {
-	const api = new SpotifyWebApi();
+	const sdk = SpotifyApi.withUserAuthorization(
+		import.meta.env.VITE_SPOTIFY_CLIENT_ID,
+		'http://localhost:5173',
+		[
+			'user-read-email',
+			'user-read-private',
+			'streaming',
+			'user-library-read',
+			'user-library-modify',
+			'user-read-playback-state',
+			'playlist-modify-public',
+			'playlist-read-private',
+			'playlist-modify-private',
+		],
+	);
 
-	api.setAccessToken(sessionStorage.getItem('spotify_token')!);
+	sdk.authenticate();
 
 	/**
 	 * Initialize the Spotify Web Playback SDK
@@ -24,17 +38,10 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 	window.onSpotifyWebPlaybackSDKReady = () => {
 		const player = new window.Spotify.Player({
 			name: 'La Radio Despote',
-			getOAuthToken: cb => {
-				let token = sessionStorage.getItem('spotify_token');
-
-				if (!token) {
-					token = prompt('give token pls')!;
-					if (token) sessionStorage.setItem('spotify_token', token);
-				}
-
-				cb(token);
+			getOAuthToken: async cb => {
+				sdk.getAccessToken().then(token => cb(token!.access_token));
 			},
-			volume: 0,
+			volume: 0.2,
 		});
 
 		set({ player });
@@ -68,16 +75,20 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 	};
 
 	return {
-		api,
+		api: sdk,
 		player: null,
 		state: null,
 		deviceId: null,
 		actions: {
 			play({ spotifyId, startedAt }) {
-				return api.play({
-					device_id: get().deviceId!,
-					uris: [`spotify:track:${spotifyId}`],
-				});
+				return sdk.player.startResumePlayback(get().deviceId!, undefined, [
+					`spotify:track:${spotifyId}`,
+				]);
+
+				// return sdk.({
+				// 	device_id: get().deviceId!,
+				// 	uris: [`spotify:track:${spotifyId}`],
+				// });
 			},
 			pause() {
 				return get().player?.pause();

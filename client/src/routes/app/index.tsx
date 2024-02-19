@@ -1,9 +1,14 @@
+import { TypographyH1 } from '@/components/typography';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/app/')({
-	component: Hello,
+	component: Home,
 });
 
-function Hello() {
-	return <div className="p-2">Hello from Hello!</div>;
+function Home() {
+	return (
+		<div className="p-8">
+			<TypographyH1>Home</TypographyH1>
+		</div>
+	);
 }
