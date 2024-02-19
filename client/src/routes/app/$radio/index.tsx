@@ -40,8 +40,6 @@ function Radio() {
 
 	const player = useSpotifyPlayerStore();
 
-	// const requestTrack = useAction(api.tracksActions.requestTrack);
-
 	const removeTrack = useMutation(api.tracks.removeTrack);
 
 	useEffect(() => {
@@ -117,15 +115,6 @@ function Radio() {
 				</ul>
 			</section>
 
-			{/* <Button
-				className="mt-8"
-				onClick={async () => {
-					requestTrack({
-						spotifyTrackId: '5EW0i7UltRvODlUXWOVE7l',
-						roomId: params.radio as Id<'rooms'>,
-					}).then(d => console.log('✅', d));
-				}}
-			></Button> */}
 			<TrackSearch roomId={params.radio as Id<'rooms'>} />
 
 			<section>
