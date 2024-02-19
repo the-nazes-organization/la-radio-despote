@@ -6,6 +6,7 @@ export default defineSchema(
 		rooms: defineTable({
 			name: v.string(),
 			listeners: v.array(v.id('users')),
+			recommendations: v.array(v.id('spotifyTrackData')),
 		}),
 
 		tracks: defineTable({

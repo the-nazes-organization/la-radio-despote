@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { query } from './_generated/server';
+import { mutation, query } from './_generated/server';
 
 /**
  * List all rooms.
@@ -36,7 +36,7 @@ export const list = query({
 export const get = query({
 	args: { roomId: v.id('rooms') },
 	handler: async (ctx, args) => {
-		const [details, queue, playing] = await Promise.all([
+		const [details, queue, playing, recommendations] = await Promise.all([
 			ctx.db.get(args.roomId),
 
 			Promise.all(
@@ -71,12 +71,35 @@ export const get = query({
 					...track,
 					spotifyTrackData: (await ctx.db.get(track!.spotifyTrackDataId))!,
 				})),
+			Promise.all(
+				await ctx.db
+					.get(args.roomId)
+					.then(room =>
+						room!.recommendations?.map(recommendation =>
+							ctx.db.get(recommendation),
+						),
+					),
+			),
 		]);
 
 		return {
 			details: details!,
 			queue,
 			playing: playing!,
+			recommendations,
 		};
+	},
+});
+
+/**
+ * Update recommendations.
+ */
+export const updateRecommendations = mutation({
+	args: {
+		roomId: v.id('rooms'),
+		recommendations: v.array(v.id('spotifyTrackData')),
+	},
+	handler: async (ctx, args) => {
+		return ctx.db.patch(args.roomId, { recommendations: args.recommendations });
 	},
 });

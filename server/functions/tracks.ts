@@ -1,6 +1,5 @@
 import { v } from 'convex/values';
-import { internalMutation, mutation } from './_generated/server';
-import { api } from './_generated/api';
+import { internalMutation, mutation, query } from './_generated/server';
 
 /**
  * Adds a track to the queue of a room.
@@ -31,38 +30,59 @@ export const addTrackToQueue = internalMutation({
  */
 export const saveSpotifyTrackData = internalMutation({
 	args: {
-		duration: v.number(),
-		name: v.string(),
-		spotifyId: v.string(),
-		artists: v.array(
+		tracksToSave: v.array(
 			v.object({
-				id: v.string(),
+				duration: v.number(),
 				name: v.string(),
+				spotifyId: v.string(),
+				artists: v.array(
+					v.object({
+						id: v.string(),
+						name: v.string(),
+					}),
+				),
+				album: v.object({
+					id: v.string(),
+					name: v.string(),
+					images: v.array(
+						v.object({
+							url: v.string(),
+							height: v.number(),
+							width: v.number(),
+						}),
+					),
+				}),
+				previewUrl: v.optional(v.string()),
 			}),
 		),
-		album: v.object({
-			id: v.string(),
-			name: v.string(),
-			images: v.array(
-				v.object({
-					url: v.string(),
-					height: v.number(),
-					width: v.number(),
-				}),
-			),
-		}),
-		previewUrl: v.optional(v.string()),
 	},
 
 	handler: async (ctx, args) => {
-		const existing = await ctx.db
-			.query('spotifyTrackData')
-			.withIndex('by_spotify_id', q => q.eq('spotifyId', args.spotifyId))
-			.unique();
+		return await Promise.all(
+			args.tracksToSave.map(async track => {
+				const existing = await ctx.db
+					.query('spotifyTrackData')
+					.withIndex('by_spotify_id', q => q.eq('spotifyId', track.spotifyId))
+					.unique();
 
-		return existing
-			? ctx.db.patch(existing._id, args).then(() => existing._id)
-			: ctx.db.insert('spotifyTrackData', args);
+				return existing
+					? ctx.db.patch(existing._id, track).then(() => existing._id)
+					: ctx.db.insert('spotifyTrackData', track);
+			}),
+		);
+	},
+});
+
+/*
+ * Update track
+ */
+export const updateTrack = internalMutation({
+	args: {
+		trackId: v.id('tracks'),
+		playedAt: v.optional(v.number()),
+	},
+	handler: async (ctx, args) => {
+		return ctx.db.patch(args.trackId, { playedAt: args.playedAt });
 	},
 });
 
@@ -78,12 +98,16 @@ export const removeTrack = mutation({
 	},
 });
 
-export const playTrack = mutation({
+/**
+ *  Get the track that is currently playing in a room.
+ */
+
+export const getPlayingTrack = query({
 	args: {
 		roomId: v.id('rooms'),
 	},
 	handler: async (ctx, args) => {
-		const track = await ctx.db
+		const currentlyPlayingTrack = await ctx.db
 			.query('tracks')
 			.withIndex('by_room_played_at_asked_at', q =>
 				q.eq('room', args.roomId).eq('playedAt', undefined),
@@ -94,21 +118,6 @@ export const playTrack = mutation({
 				...t,
 				spotifyTrackData: (await ctx.db.get(t!.spotifyTrackDataId))!,
 			}));
-
-		const now = Date.now();
-
-		await ctx.db.patch(track._id!, { playedAt: now });
-
-		await ctx.scheduler.runAfter(
-			track!.spotifyTrackData!.duration,
-			api.tracks.playTrack,
-			{ roomId: args.roomId },
-		);
-
-		/**
-		 * - Get spotify recommendations given the last 3 musics
-		 * - Fetch les infos des 3 recommendations
-		 * - Ajouter les 3 recommendations dans le field room.recommendations
-		 */
+		return currentlyPlayingTrack;
 	},
 });

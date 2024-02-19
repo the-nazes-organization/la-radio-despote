@@ -30,6 +30,7 @@ export const seedInitialData = internalMutation(async ctx => {
 	const roomId = await ctx.db.insert('rooms', {
 		name: 'Bamboche Radio',
 		listeners: [],
+		recommendations: [],
 	});
 
 	return { roomId, userId };
@@ -49,7 +50,7 @@ export const seed = internalAction(async ctx => {
 		userId,
 	});
 
-	await ctx.runMutation(api.tracks.playTrack, {
+	await ctx.runAction(api.tracksActions.playTrack, {
 		roomId,
 	});
 });
