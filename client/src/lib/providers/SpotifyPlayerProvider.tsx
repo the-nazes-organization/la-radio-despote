@@ -1,5 +1,6 @@
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import { create } from 'zustand';
+import { sleep } from '../sleep';
 
 interface SpotifyPlayerState {
 	sdk: SpotifyApi;
@@ -85,15 +86,10 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 		state: null,
 		deviceId: null,
 		actions: {
-			play({ spotifyId, startedAt }) {
-				return sdk.player.startResumePlayback(get().deviceId!, undefined, [
+			async play({ spotifyId, startedAt }) {
+				await sdk.player.startResumePlayback(get().deviceId!, undefined, [
 					`spotify:track:${spotifyId}`,
 				]);
-
-				// return sdk.({
-				// 	device_id: get().deviceId!,
-				// 	uris: [`spotify:track:${spotifyId}`],
-				// });
 			},
 			pause() {
 				return get().player?.pause();
