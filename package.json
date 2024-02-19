@@ -10,7 +10,7 @@
 	"scripts": {
 		"dev": "concurrently 'yarn workspace client dev' 'yarn workspace server dev'",
 		"dev:tauri": "concurrently 'yarn workspace client tauri dev' 'yarn workspace server dev'",
-		"build": "yarn workspace server convex codegen && yarn workspace server convex deploy --cmd-url-env-var-name VITE_CONVEX_URL --cmd 'yarn workspace client build'",
+		"build:root": "yarn workspace server convex codegen && yarn workspace server convex deploy --cmd-url-env-var-name VITE_CONVEX_URL --cmd 'yarn workspace client build'",
 		"seed": "npx convex import --replace --table users sampleData/sampleUsers.jsonl && npx convex import --replace --table rooms sampleData/sampleRooms.jsonl && npx convex import --replace --table tracks sampleData/sampleTracks.jsonl",
 		"postinstall": "patch-package"
 	},
