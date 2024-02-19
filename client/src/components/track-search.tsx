@@ -1,4 +1,5 @@
 import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
+import type { Track } from '@spotify/web-api-ts-sdk';
 import { useAction } from 'convex/react';
 import { Plus, Search } from 'lucide-react';
 import { useState } from 'react';
@@ -25,7 +26,7 @@ export const TrackSearch = ({ roomId }: TrackSearchProps) => {
 	const requestTrack = useAction(api.tracksActions.requestTrack);
 
 	const [query, setQuery] = useState('');
-	const [results, setResults] = useState<any>([]);
+	const [results, setResults] = useState<Track[]>([]);
 
 	const handleSearch = async () => {
 		const elementsFound = await player.sdk.search(
@@ -34,11 +35,9 @@ export const TrackSearch = ({ roomId }: TrackSearchProps) => {
 			undefined,
 			10,
 		);
-		console.log('elementsFound', elementsFound);
+
 		setResults(elementsFound.tracks.items);
 	};
-
-	console.log('results', results);
 
 	return (
 		<Dialog>
