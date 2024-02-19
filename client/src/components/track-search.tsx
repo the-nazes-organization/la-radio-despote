@@ -17,11 +17,12 @@ import {
 } from './ui/dialog';
 import { Input } from './ui/input';
 
-interface TrackSearchProps {
+interface AddTrackButtonProps {
 	roomId: Id<'rooms'>;
+	classname?: string;
 }
 
-export const TrackSearch = ({ roomId }: TrackSearchProps) => {
+export const AddTrackButton = ({ roomId, classname }: AddTrackButtonProps) => {
 	const player = useSpotifyPlayerStore();
 	const requestTrack = useAction(api.tracksActions.requestTrack);
 
@@ -41,7 +42,7 @@ export const TrackSearch = ({ roomId }: TrackSearchProps) => {
 
 	return (
 		<Dialog>
-			<DialogTrigger asChild>
+			<DialogTrigger asChild className={classname}>
 				<Button>Add a track</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px]">
