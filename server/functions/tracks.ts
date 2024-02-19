@@ -104,5 +104,11 @@ export const playTrack = mutation({
 			api.tracks.playTrack,
 			{ roomId: args.roomId },
 		);
+
+		/**
+		 * - Get spotify recommendations given the last 3 musics
+		 * - Fetch les infos des 3 recommendations
+		 * - Ajouter les 3 recommendations dans le field room.recommendations
+		 */
 	},
 });
