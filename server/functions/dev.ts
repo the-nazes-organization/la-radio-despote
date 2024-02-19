@@ -1,4 +1,5 @@
-import { internalMutation } from './_generated/server';
+import { api, internal } from './_generated/api';
+import { internalAction, internalMutation } from './_generated/server';
 
 export const drop = internalMutation(async ctx => {
 	for (const table of [
@@ -13,8 +14,8 @@ export const drop = internalMutation(async ctx => {
 	}
 });
 
-export const seed = internalMutation(async ctx => {
-	const max = await ctx.db.insert('users', {
+export const seedInitialData = internalMutation(async ctx => {
+	const userId = await ctx.db.insert('users', {
 		username: 'max',
 		email: 'max@example.com',
 		password: 'password',
@@ -26,66 +27,27 @@ export const seed = internalMutation(async ctx => {
 		password: 'password',
 	});
 
-	const room = await ctx.db.insert('rooms', {
+	const roomId = await ctx.db.insert('rooms', {
 		name: 'Bamboche Radio',
 		listeners: [],
 	});
 
-	const discoRadio = await ctx.db.insert('rooms', {
-		name: 'Disco Radio',
-		listeners: [],
+	return { roomId, userId };
+});
+
+export const seed = internalAction(async ctx => {
+	const { roomId, userId } = await ctx.runMutation(
+		internal.dev.seedInitialData,
+		{},
+	);
+
+	await ctx.runAction(api.tracksActions.requestTrack, {
+		roomId,
+		spotifyTrackId: '3aOYYQMRwCJjHsOWS5rv1Z',
+		userId,
 	});
 
-	const sampleTrackData = await ctx.db.insert('spotifyTrackData', {
-		album: {
-			id: '1F6pbvvDZVFepqnD3nnVI7',
-			images: [
-				{
-					height: 640,
-					url: 'https://i.scdn.co/image/ab67616d0000b27348e18170644d49d5bd44e3c1',
-					width: 640,
-				},
-				{
-					height: 300,
-					url: 'https://i.scdn.co/image/ab67616d00001e0248e18170644d49d5bd44e3c1',
-					width: 300,
-				},
-				{
-					height: 64,
-					url: 'https://i.scdn.co/image/ab67616d0000485148e18170644d49d5bd44e3c1',
-					width: 64,
-				},
-			],
-			name: 'Numbaz EP',
-		},
-		artists: [
-			{
-				id: '3XGGc2cdg65V8AOXGfdHwb',
-				name: 'Franck',
-			},
-		],
-		duration: 307966,
-		spotifyId: '5EW0i7UltRvODlUXWOVE7l',
-		name: 'Get Down',
-		previewUrl:
-			'https://p.scdn.co/mp3-preview/aed5ad751421daa9d749cb3e42ce7adbb73037e0?cid=2a67b948aa004e08afb92cb34295ce86',
-	});
-
-	await ctx.db.insert('tracks', {
-		askedBy: max,
-		duration: 100,
-		room,
-		spotifyTrackDataId: sampleTrackData,
-		playedAt: Date.now(),
-		askedAt: Date.now() - 5400 * 1000,
-	});
-
-	await ctx.db.insert('tracks', {
-		askedBy: max,
-		duration: 100,
-		room: discoRadio,
-		spotifyTrackDataId: sampleTrackData,
-		playedAt: Date.now(),
-		askedAt: Date.now() - 5400 * 1000,
+	await ctx.runMutation(api.tracks.playTrack, {
+		roomId,
 	});
 });

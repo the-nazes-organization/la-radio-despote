@@ -1,5 +1,6 @@
 import { v } from 'convex/values';
 import { internalMutation, mutation } from './_generated/server';
+import { api } from './_generated/api';
 
 /**
  * Adds a track to the queue of a room.
@@ -74,5 +75,34 @@ export const removeTrack = mutation({
 	},
 	handler: async (ctx, args) => {
 		return ctx.db.delete(args.trackId);
+	},
+});
+
+export const playTrack = mutation({
+	args: {
+		roomId: v.id('rooms'),
+	},
+	handler: async (ctx, args) => {
+		const track = await ctx.db
+			.query('tracks')
+			.withIndex('by_room_played_at_asked_at', q =>
+				q.eq('room', args.roomId).eq('playedAt', undefined),
+			)
+			.order('asc')
+			.first()
+			.then(async t => ({
+				...t,
+				spotifyTrackData: (await ctx.db.get(t!.spotifyTrackDataId))!,
+			}));
+
+		const now = Date.now();
+
+		await ctx.db.patch(track._id!, { playedAt: now });
+
+		await ctx.scheduler.runAfter(
+			track!.spotifyTrackData!.duration,
+			api.tracks.playTrack,
+			{ roomId: args.roomId },
+		);
 	},
 });

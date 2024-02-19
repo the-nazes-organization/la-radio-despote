@@ -36,16 +36,16 @@ export const list = query({
 export const get = query({
 	args: { roomId: v.id('rooms') },
 	handler: async (ctx, args) => {
-		const [details, tracks] = await Promise.all([
+		const [details, queue, playing] = await Promise.all([
 			ctx.db.get(args.roomId),
 
 			Promise.all(
 				await ctx.db
 					.query('tracks')
-
-					.withIndex('by_room_played_at', q => q.eq('room', args.roomId))
-					.order('asc')
-
+					.withIndex('by_room_played_at_asked_at', q =>
+						q.eq('room', args.roomId).eq('playedAt', undefined),
+					)
+					.order('desc')
 					.collect()
 					.then(tracks =>
 						tracks.map(async track => {
@@ -62,14 +62,21 @@ export const get = query({
 						}),
 					),
 			),
+			ctx.db
+				.query('tracks')
+				.withIndex('by_room_played_at')
+				.order('desc')
+				.first()
+				.then(async track => ({
+					...track,
+					spotifyTrackData: (await ctx.db.get(track!.spotifyTrackDataId))!,
+				})),
 		]);
-
-		const [playing, ...queue] = tracks;
 
 		return {
 			details: details!,
 			queue,
-			playing,
+			playing: playing!,
 		};
 	},
 });

@@ -18,6 +18,7 @@ export default defineSchema(
 			spotifyTrackDataId: v.id('spotifyTrackData'),
 		})
 			.index('by_room_played_at', ['room', 'playedAt'])
+			.index('by_room_played_at_asked_at', ['room', 'playedAt', 'askedAt'])
 			.index('by_played_at', ['playedAt']),
 
 		spotifyTrackData: defineTable({
