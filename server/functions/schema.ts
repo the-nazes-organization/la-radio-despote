@@ -52,7 +52,5 @@ export default defineSchema(
 		}),
 	},
 
-	{
-		schemaValidation: false,
-	},
+	{ schemaValidation: false },
 );
