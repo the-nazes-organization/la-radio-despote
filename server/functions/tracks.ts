@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { internalMutation } from './_generated/server';
+import { internalMutation, mutation } from './_generated/server';
 
 /**
  * Adds a track to the queue of a room.
@@ -62,5 +62,17 @@ export const saveSpotifyTrackData = internalMutation({
 		return existing
 			? ctx.db.patch(existing._id, args).then(() => existing._id)
 			: ctx.db.insert('spotifyTrackData', args);
+	},
+});
+
+/**
+ * Deletes a track from the queue of a room.
+ */
+export const removeTrack = mutation({
+	args: {
+		trackId: v.id('tracks'),
+	},
+	handler: async (ctx, args) => {
+		return ctx.db.delete(args.trackId);
 	},
 });

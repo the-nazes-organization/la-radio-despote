@@ -7,8 +7,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { preloadQuery } from '@/lib/preload-query';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useAction, usePreloadedQuery } from 'convex/react';
+import { useAction, useMutation, usePreloadedQuery } from 'convex/react';
 
+import { X } from 'lucide-react';
 import { useEffect } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
@@ -39,6 +40,8 @@ function Radio() {
 	const player = useSpotifyPlayerStore();
 
 	const requestTrack = useAction(api.tracksActions.requestTrack);
+
+	const removeTrack = useMutation(api.tracks.removeTrack);
 
 	useEffect(() => {
 		if (player.deviceId && room.playing) {
@@ -79,18 +82,31 @@ function Radio() {
 					{room.tracks
 						.filter(track => !track.playedAt)
 						.map(track => (
-							<li key={track._id} className="grid grid-cols-[40px_1fr] gap-4">
-								<img
-									src={track.spotifyTrackData.album.images[2].url}
-									className="rounded-md"
-								/>
-
-								<div>
-									<div className="text-sm">{track.spotifyTrackData.name}</div>
-									<TypographyMuted className="text-xs">
-										{track.spotifyTrackData.artists[0].name}
-									</TypographyMuted>
+							<li key={track._id} className=" flex items-center group">
+								<div className="grid grid-cols-[40px_1fr] gap-4">
+									<img
+										src={track.spotifyTrackData.album.images[2].url}
+										className="rounded-md"
+									/>
+									<div>
+										<div className="text-sm">{track.spotifyTrackData.name}</div>
+										<TypographyMuted className="text-xs">
+											{track.spotifyTrackData.artists[0].name}
+										</TypographyMuted>
+									</div>
 								</div>
+								<Button
+									className="ml-auto hidden group-hover:flex "
+									size={'icon'}
+								>
+									<X
+										onClick={async () => {
+											removeTrack({
+												trackId: track._id,
+											});
+										}}
+									/>
+								</Button>
 							</li>
 						))}
 				</ul>
