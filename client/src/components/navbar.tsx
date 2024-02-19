@@ -1,9 +1,10 @@
 import { Link } from '@tanstack/react-router';
 import { FunctionReturnType } from 'convex/server';
 import { Headphones } from 'lucide-react';
+import { api } from 'server';
 
 interface NavbarProps {
-	rooms: FunctionReturnType<typeof import('server').api.rooms.list>;
+	rooms: FunctionReturnType<typeof api.rooms.list>;
 }
 
 export const Navbar = ({ rooms }: NavbarProps) => {
