@@ -18,7 +18,7 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 ) => {
 	const sdk = SpotifyApi.withUserAuthorization(
 		import.meta.env.VITE_SPOTIFY_CLIENT_ID,
-		'http://localhost:5173/login',
+		`${window.location.origin}/login`,
 		[
 			'user-read-email',
 			'user-read-private',
@@ -96,7 +96,6 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 					undefined,
 					diff,
 				);
-
 			},
 			pause() {
 				return get().player?.pause();
