@@ -35,12 +35,12 @@ export const playTrack = action({
 		roomId: v.id('rooms'),
 	},
 	handler: async (ctx, args) => {
-		//We get current playing track
+		// We get current playing track
 		const playingTrack = await ctx.runQuery(api.tracks.getPlayingTrack, {
 			roomId: args.roomId,
 		});
 
-		//We update the track to set the playedAt field
+		// We update the track to set the playedAt field
 		const now = Date.now();
 		await ctx.runMutation(internal.tracks.updateTrack, {
 			trackId: playingTrack._id!,
