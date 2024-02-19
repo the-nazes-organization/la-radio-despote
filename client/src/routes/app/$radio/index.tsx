@@ -7,8 +7,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { preloadQuery } from '@/lib/preload-query';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useAction, useMutation, usePreloadedQuery } from 'convex/react';
+import { useMutation, usePreloadedQuery } from 'convex/react';
 
+import { TrackSearch } from '@/components/track-search';
 import { X } from 'lucide-react';
 import { useEffect } from 'react';
 import { api } from 'server';
@@ -39,7 +40,7 @@ function Radio() {
 
 	const player = useSpotifyPlayerStore();
 
-	const requestTrack = useAction(api.tracksActions.requestTrack);
+	// const requestTrack = useAction(api.tracksActions.requestTrack);
 
 	const removeTrack = useMutation(api.tracks.removeTrack);
 
@@ -82,7 +83,10 @@ function Radio() {
 					{room.tracks
 						.filter(track => !track.playedAt)
 						.map(track => (
-							<li key={track._id} className=" flex items-center group">
+							<li
+								key={track._id}
+								className=" flex items-center group transition ease-in-out duration-500"
+							>
 								<div className="grid grid-cols-[40px_1fr] gap-4">
 									<img
 										src={track.spotifyTrackData.album.images[2].url}
@@ -96,7 +100,7 @@ function Radio() {
 									</div>
 								</div>
 								<Button
-									className="ml-auto hidden group-hover:flex "
+									className="ml-auto hidden group-hover:flex   "
 									size={'icon'}
 									variant={'outline'}
 								>
@@ -113,7 +117,7 @@ function Radio() {
 				</ul>
 			</section>
 
-			<Button
+			{/* <Button
 				className="mt-8"
 				onClick={async () => {
 					requestTrack({
@@ -121,9 +125,8 @@ function Radio() {
 						roomId: params.radio as Id<'rooms'>,
 					}).then(d => console.log('✅', d));
 				}}
-			>
-				Ajouter "Get down" à la file d'attente
-			</Button>
+			></Button> */}
+			<TrackSearch roomId={params.radio as Id<'rooms'>} />
 
 			<section>
 				<TypographyH2 className="mb-4">Historique</TypographyH2>
