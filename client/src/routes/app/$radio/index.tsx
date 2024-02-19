@@ -98,6 +98,7 @@ function Radio() {
 								<Button
 									className="ml-auto hidden group-hover:flex "
 									size={'icon'}
+									variant={'outline'}
 								>
 									<X
 										onClick={async () => {
