@@ -1,7 +1,8 @@
 import {
 	TypographyH1,
-	TypographyH2,
 	TypographyH3,
+	TypographyH4,
+	TypographyLarge,
 	TypographyMuted,
 } from '@/components/typography';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useAction, useMutation, usePreloadedQuery } from 'convex/react';
 
 import { AddTrackButton } from '@/components/add-track-button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Plus, X } from 'lucide-react';
 import { useEffect } from 'react';
 import { api } from 'server';
@@ -58,34 +60,32 @@ function Radio() {
 	}, [player.deviceId, room.playing]);
 
 	return (
-		<div className="p-8 ">
+		<div className="p-6 border rounded-md h-full flex flex-col justify-between items-center">
 			<TypographyH1 className="mb-12">{room.details.name}</TypographyH1>
-			<div className="grid grid-cols-2 h-auto gap-4">
-				<section>
-					<div className="">
-						<img
-							className="square-[280px] rounded-2xl mb-1"
-							src={room.playing.spotifyTrackData.album.images[0].url}
-						/>
 
-						<TypographyH3 className="">
-							{room.playing.spotifyTrackData.name}
-						</TypographyH3>
+			<section className="">
+				<img
+					className="square-[160px] tall:square-[260px] rounded-2xl mb-2"
+					src={room.playing.spotifyTrackData.album.images[0].url}
+				/>
 
-						<TypographyMuted className="text-xs">
-							{room.playing.spotifyTrackData.artists[0].name}
-						</TypographyMuted>
-					</div>
-				</section>
-				<section>
-					<TypographyH2 className="mb-4 flex ">
-						<span>Liste d'attente</span>
-						<AddTrackButton
-							roomId={params.radio as Id<'rooms'>}
-							classname="ml-auto"
-						/>
-					</TypographyH2>
+				<TypographyH3 className="mb-1">
+					{room.playing.spotifyTrackData.name}
+				</TypographyH3>
 
+				<TypographyMuted className="text-xs">
+					{room.playing.spotifyTrackData.artists[0].name}
+				</TypographyMuted>
+			</section>
+
+			<section>
+				<TypographyH3 className="mb-4 flex justify-between">
+					<span>Liste d'attente</span>
+
+					<AddTrackButton roomId={params.radio as Id<'rooms'>} />
+				</TypographyH3>
+
+				<ScrollArea className="w-[480px] h-[360px]">
 					<ul className="space-y-3">
 						{room.queue
 							.filter(track => !track.playedAt)
@@ -123,11 +123,13 @@ function Radio() {
 									</Button>
 								</li>
 							))}
+					</ul>
 
-						<TypographyH3 className="mt-8 mb-4 flex ">
-							Recommandations
-						</TypographyH3>
+					<TypographyLarge className="mt-8 mb-4 flex">
+						Recommandations
+					</TypographyLarge>
 
+					<ul className="space-y-3">
 						{room.recommendations?.map(track => (
 							<li
 								key={track!._id}
@@ -162,32 +164,8 @@ function Radio() {
 							</li>
 						))}
 					</ul>
-				</section>
-
-				<section>
-					<TypographyH2 className="mb-4">Historique</TypographyH2>
-
-					<ul className="space-y-3">
-						{room.queue
-							.filter(track => !!track.playedAt)
-							.map(track => (
-								<li key={track._id} className="grid grid-cols-[40px_1fr] gap-4">
-									<img
-										src={track.spotifyTrackData.album.images[2].url}
-										className="rounded-md"
-									/>
-
-									<div>
-										<div className="text-sm">{track.spotifyTrackData.name}</div>
-										<TypographyMuted className="text-xs">
-											{track.spotifyTrackData.artists[0].name}
-										</TypographyMuted>
-									</div>
-								</li>
-							))}
-					</ul>
-				</section>
-			</div>
+				</ScrollArea>
+			</section>
 		</div>
 	);
 }

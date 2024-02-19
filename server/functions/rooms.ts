@@ -45,7 +45,7 @@ export const get = query({
 					.withIndex('by_room_played_at_asked_at', q =>
 						q.eq('room', args.roomId).eq('playedAt', undefined),
 					)
-					.order('desc')
+					.order('asc')
 					.collect()
 					.then(tracks =>
 						tracks.map(async track => {
