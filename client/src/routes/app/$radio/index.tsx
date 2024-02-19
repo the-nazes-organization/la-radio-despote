@@ -23,6 +23,7 @@ export const Route = createFileRoute('/app/$radio/')({
 		const preloaded = await preloadQuery(api.rooms.get, {
 			roomId: radio as Id<'rooms'>,
 		}).catch(error => {
+			console.log(`👨‍🚒`, error);
 			/**
 			 * If the room doesn't exist, redirect to the home page.
 			 */
@@ -85,7 +86,7 @@ function Radio() {
 					<AddTrackButton roomId={params.radio as Id<'rooms'>} />
 				</TypographyH3>
 
-				<ScrollArea className="w-[480px] h-[360px]">
+				<ScrollArea className="w-[600px] h-[360px]">
 					<ul className="space-y-3">
 						{room.queue
 							.filter(track => !track.playedAt)

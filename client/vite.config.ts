@@ -10,6 +10,9 @@ export default defineConfig({
 			typescript: true,
 		}),
 	],
+	server: {
+		strictPort: true,
+	},
 	resolve: {
 		alias: {
 			'@': path.resolve(__dirname, './src'),

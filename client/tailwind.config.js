@@ -20,7 +20,7 @@ module.exports = {
 		},
 		extend: {
 			screens: {
-				tall: { raw: '(min-height: 800px)' },
+				tall: { raw: '(min-height: 900px)' },
 			},
 
 			colors: {
