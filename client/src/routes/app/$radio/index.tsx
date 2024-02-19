@@ -123,7 +123,11 @@ function Radio() {
 									</Button>
 								</li>
 							))}
-						RECOMMANDATION
+
+						<TypographyH3 className="mt-8 mb-4 flex ">
+							Recommandations
+						</TypographyH3>
+
 						{room.recommendations?.map(track => (
 							<li
 								key={track!._id}
