@@ -36,6 +36,8 @@ export const seedInitialData = internalMutation(async ctx => {
 });
 
 export const seed = internalAction(async ctx => {
+	await ctx.runMutation(internal.dev.drop, {});
+
 	const { roomId, userId } = await ctx.runMutation(
 		internal.dev.seedInitialData,
 		{},
