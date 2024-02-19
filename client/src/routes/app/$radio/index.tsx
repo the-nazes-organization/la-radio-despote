@@ -78,7 +78,7 @@ function Radio() {
 				<TypographyH2 className="mb-4">Liste d'attente</TypographyH2>
 
 				<ul className="space-y-3">
-					{room.tracks
+					{room.queue
 						.filter(track => !track.playedAt)
 						.map(track => (
 							<li
@@ -121,7 +121,7 @@ function Radio() {
 				<TypographyH2 className="mb-4">Historique</TypographyH2>
 
 				<ul className="space-y-3">
-					{room.tracks
+					{room.queue
 						.filter(track => !!track.playedAt)
 						.map(track => (
 							<li key={track._id} className="grid grid-cols-[40px_1fr] gap-4">

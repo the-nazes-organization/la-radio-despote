@@ -64,10 +64,12 @@ export const get = query({
 			),
 		]);
 
+		const [playing, ...queue] = tracks;
+
 		return {
 			details: details!,
-			tracks,
-			playing: tracks[0],
+			queue,
+			playing,
 		};
 	},
 });
