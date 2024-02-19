@@ -66,7 +66,7 @@ function Radio() {
 
 			<section className="">
 				<img
-					className="square-[160px] tall:square-[260px] rounded-2xl mb-2"
+					className="square-[160px] tall:square-[260px] xtall:square-[350px] rounded-2xl mb-2"
 					src={room.playing.spotifyTrackData.album.images[0].url}
 				/>
 
@@ -80,14 +80,16 @@ function Radio() {
 			</section>
 
 			<section>
-				<TypographyH3 className="mb-4 flex justify-between">
+				<TypographyH3 className="mb-3 flex justify-between">
 					<span>Liste d'attente</span>
 
 					<AddTrackButton roomId={params.radio as Id<'rooms'>} />
 				</TypographyH3>
 
+				<hr />
+
 				<ScrollArea className="w-[600px] h-[360px]">
-					<ul className="space-y-3">
+					<ul className="space-y-3 pt-4">
 						{room.queue
 							.filter(track => !track.playedAt)
 							.map(track => (
@@ -110,7 +112,7 @@ function Radio() {
 										</div>
 									</div>
 									<Button
-										className="ml-auto hidden group-hover:flex   "
+										className="ml-auto hidden group-hover:flex"
 										size={'icon'}
 										variant={'outline'}
 									>
@@ -149,7 +151,7 @@ function Radio() {
 									</div>
 								</div>
 								<Button
-									className="ml-auto hidden group-hover:flex   "
+									className="ml-auto hidden group-hover:flex"
 									size={'icon'}
 									variant={'outline'}
 								>

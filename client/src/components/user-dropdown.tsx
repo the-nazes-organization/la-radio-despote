@@ -14,7 +14,15 @@ import {
 import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
 import { useTheme } from '@/lib/providers/ThemeProvider';
 import { useNavigate } from '@tanstack/react-router';
-import { Check, LogOut, Moon, Settings, Sun, Users } from 'lucide-react';
+import {
+	Check,
+	LogOut,
+	Moon,
+	Settings,
+	Sun,
+	Volume2,
+	VolumeX,
+} from 'lucide-react';
 
 export function UserDropdown() {
 	const { theme, setTheme } = useTheme();
@@ -25,7 +33,11 @@ export function UserDropdown() {
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant="outline" size="icon" className="rounded-full">
-					<Settings className="h-[1.2rem] w-[1.2rem]" />
+					{spotify.isPlayerDisabled ? (
+						<VolumeX className="h-[1.2rem] w-[1.2rem]" />
+					) : (
+						<Settings className="h-[1.2rem] w-[1.2rem]" />
+					)}
 				</Button>
 			</DropdownMenuTrigger>
 
@@ -37,10 +49,22 @@ export function UserDropdown() {
 				align="end"
 			>
 				<DropdownMenuGroup>
-					<DropdownMenuItem>
-						<Users className="mr-2 h-4 w-4" />
-						<span>Profil</span>
-					</DropdownMenuItem>
+					{spotify.isPlayerDisabled ? (
+						<DropdownMenuItem
+							onClick={() => spotify.actions.setPlayerDisabled(false)}
+						>
+							<Volume2 className="mr-2 square-4" />
+							<span>Enable player</span>
+						</DropdownMenuItem>
+					) : (
+						<DropdownMenuItem
+							onClick={() => spotify.actions.setPlayerDisabled(true)}
+						>
+							<VolumeX className="mr-2 square-4" />
+							<span>Disable player</span>
+						</DropdownMenuItem>
+					)}
+
 					<DropdownMenuSub>
 						<DropdownMenuSubTrigger>
 							{theme === 'light' ? (
@@ -79,7 +103,7 @@ export function UserDropdown() {
 						navigate({ to: '/login' });
 					}}
 				>
-					<LogOut className="mr-2 h-4 w-4" />
+					<LogOut className="mr-2 square-4" />
 					<span>Log out</span>
 				</DropdownMenuItem>
 			</DropdownMenuContent>

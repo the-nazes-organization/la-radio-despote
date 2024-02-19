@@ -21,6 +21,7 @@ module.exports = {
 		extend: {
 			screens: {
 				tall: { raw: '(min-height: 900px)' },
+				xtall: { raw: '(min-height: 1100px)' },
 			},
 
 			colors: {
