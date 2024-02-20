@@ -46,7 +46,7 @@ export const seed = internalAction(async ctx => {
 
 	await ctx.runAction(api.tracksActions.requestTrack, {
 		roomId,
-		spotifyTrackId: '3aOYYQMRwCJjHsOWS5rv1Z',
+		spotifyTrackId: '4b67MDtD92iU5Rsys7yWgy',
 		userId,
 	});
 
