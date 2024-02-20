@@ -17,6 +17,7 @@ import { useEffect } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
 import { useSpotifyPlayerStore } from '../../../lib/providers/SpotifyPlayerProvider';
+import { CommandMenu } from '@/components/ui/command-menu';
 
 export const Route = createFileRoute('/app/$radio/')({
 	loader: async ({ params: { radio } }) => {
@@ -62,6 +63,8 @@ function Radio() {
 
 	return (
 		<div className="p-6 border rounded-md h-full flex flex-col justify-between items-center">
+			<CommandMenu />
+
 			<TypographyH1 className="mb-12">{room.details.name}</TypographyH1>
 
 			<section className="">

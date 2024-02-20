@@ -34,8 +34,6 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 		],
 	);
 
-	// sdk.authenticate();
-
 	/**
 	 * Initialize the Spotify Web Playback SDK
 	 */
@@ -49,7 +47,6 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 					}
 				});
 			},
-			// volume: 1,
 		});
 
 		set({ player });
