@@ -98,11 +98,7 @@ export const removeTrack = mutation({
 	},
 });
 
-/**
- *  Get the track that is currently playing in a room.
- */
-
-export const getPlayingTrack = query({
+export const getNextTrackInQueue = query({
 	args: {
 		roomId: v.id('rooms'),
 	},
@@ -113,11 +109,22 @@ export const getPlayingTrack = query({
 				q.eq('room', args.roomId).eq('playedAt', undefined),
 			)
 			.order('asc')
-			.first()
-			.then(async t => ({
-				...t,
-				spotifyTrackData: (await ctx.db.get(t!.spotifyTrackDataId))!,
-			}));
-		return currentlyPlayingTrack;
+			.first();
+
+		if (!currentlyPlayingTrack) {
+			return null;
+		}
+
+		const spotifyTrackData = await ctx.db.get(
+			currentlyPlayingTrack.spotifyTrackDataId,
+		);
+
+		if (!spotifyTrackData) {
+			throw new Error(
+				`Could not find spotify track data with id ${currentlyPlayingTrack.spotifyTrackDataId}`,
+			);
+		}
+
+		return { ...currentlyPlayingTrack, spotifyTrackData };
 	},
 });

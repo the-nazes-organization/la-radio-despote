@@ -106,3 +106,20 @@ export const updateRecommendations = mutation({
 		return ctx.db.patch(args.roomId, { recommendations: args.recommendations });
 	},
 });
+
+export const getRecommendatedTrack = query({
+	args: {
+		roomId: v.id('rooms'),
+	},
+	handler: async (ctx, args) => {
+		return ctx.db.get(args.roomId).then(async room => {
+			const recommendation = await ctx.db.get(room!.recommendations[0]!);
+
+			if (!recommendation) {
+				throw new Error('No recommendations');
+			}
+
+			return recommendation;
+		});
+	},
+});

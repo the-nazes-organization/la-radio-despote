@@ -36,27 +36,43 @@ export const playTrack = action({
 	},
 	handler: async (ctx, args) => {
 		// We get current playing track
-		const playingTrack = await ctx.runQuery(api.tracks.getPlayingTrack, {
+		let nextTrackInQueue = await ctx.runQuery(api.tracks.getNextTrackInQueue, {
 			roomId: args.roomId,
 		});
+
+		if (!nextTrackInQueue) {
+			const recommendation = await ctx.runQuery(
+				api.rooms.getRecommendatedTrack,
+				{ roomId: args.roomId },
+			);
+
+			await ctx.runAction(api.tracksActions.requestTrack, {
+				roomId: args.roomId,
+				spotifyTrackId: recommendation.spotifyId,
+			});
+
+			nextTrackInQueue = (await ctx.runQuery(api.tracks.getNextTrackInQueue, {
+				roomId: args.roomId,
+			}))!;
+		}
 
 		// We update the track to set the playedAt field
 		const now = Date.now();
 		await ctx.runMutation(internal.tracks.updateTrack, {
-			trackId: playingTrack._id!,
+			trackId: nextTrackInQueue._id!,
 			playedAt: now,
 		});
 
 		// We schedule the next track to be played
 		await ctx.scheduler.runAfter(
-			playingTrack!.spotifyTrackData!.duration,
+			nextTrackInQueue!.spotifyTrackData!.duration,
 			api.tracksActions.playTrack,
 			{ roomId: args.roomId },
 		);
 
 		// We look for recommendations
 		const recommendationsBySpotify = await spotifyApi.recommendations.get({
-			seed_tracks: [playingTrack.spotifyTrackData!.spotifyId],
+			seed_tracks: [nextTrackInQueue.spotifyTrackData.spotifyId],
 		});
 
 		// We save the recommendations
