@@ -5,6 +5,7 @@ import { spotifyApi } from '../lib/spotifyApi';
 import { api, internal } from './_generated/api';
 import { action } from './_generated/server';
 import { formatTrack } from './_helpers';
+import { Id } from './_generated/dataModel';
 
 export const requestTrack = action({
 	args: {
@@ -12,21 +13,27 @@ export const requestTrack = action({
 		userId: v.optional(v.id('users')), // todo remove optional
 		roomId: v.id('rooms'),
 	},
+
 	handler: async (ctx, args) => {
 		const track = await spotifyApi.tracks.get(args.spotifyTrackId);
 
-		const trackDataId = await ctx.runMutation(
+		const [spotifyTrackDataId] = await ctx.runMutation(
 			internal.tracks.saveSpotifyTrackData,
 			{ tracksToSave: [formatTrack(track)] },
 		);
 
-		await ctx.runMutation(internal.tracks.addTrackToQueue, {
-			askedBy: args.userId,
-			askedAt: Date.now(),
-			duration: track.duration_ms,
-			room: args.roomId,
-			spotifyTrackDataId: trackDataId[0],
-		});
+		const trackId: Id<'tracks'> = await ctx.runMutation(
+			internal.tracks.addTrackToQueue,
+			{
+				askedBy: args.userId,
+				askedAt: Date.now(),
+				duration: track.duration_ms,
+				room: args.roomId,
+				spotifyTrackDataId,
+			},
+		);
+
+		return trackId;
 	},
 });
 
@@ -59,13 +66,13 @@ export const playTrack = action({
 		// We update the track to set the playedAt field
 		const now = Date.now();
 		await ctx.runMutation(internal.tracks.updateTrack, {
-			trackId: nextTrackInQueue._id!,
+			trackId: nextTrackInQueue._id,
 			playedAt: now,
 		});
 
 		// We schedule the next track to be played
 		await ctx.scheduler.runAfter(
-			nextTrackInQueue!.spotifyTrackData!.duration,
+			nextTrackInQueue.spotifyTrackData.duration,
 			api.tracksActions.playTrack,
 			{ roomId: args.roomId },
 		);
