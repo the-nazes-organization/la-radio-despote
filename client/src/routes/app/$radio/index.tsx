@@ -164,7 +164,7 @@ function Radio() {
 									</div>
 								</div>
 								<Button
-									className="ml-auto hidden group-hover:flex"
+									className="ml-auto hidden group-hover:flex rounded-full"
 									size={'icon'}
 									variant={'outline'}
 								>
