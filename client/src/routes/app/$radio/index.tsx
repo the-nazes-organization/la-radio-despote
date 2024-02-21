@@ -1,7 +1,6 @@
 import {
 	TypographyH1,
 	TypographyH3,
-	TypographyH4,
 	TypographyLarge,
 	TypographyMuted,
 } from '@/components/typography';
@@ -11,13 +10,14 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useAction, useMutation, usePreloadedQuery } from 'convex/react';
 
 import { AddTrackButton } from '@/components/add-track-button';
+import { TimeSlider } from '@/components/time-slider';
+import { CommandMenu } from '@/components/ui/command-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Plus, X } from 'lucide-react';
 import { useEffect } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
 import { useSpotifyPlayerStore } from '../../../lib/providers/SpotifyPlayerProvider';
-import { CommandMenu } from '@/components/ui/command-menu';
 
 export const Route = createFileRoute('/app/$radio/')({
 	loader: async ({ params: { radio } }) => {
@@ -67,19 +67,20 @@ function Radio() {
 
 			<TypographyH1 className="mb-12">{room.details.name}</TypographyH1>
 
-			<section className="">
+			<section className="flex flex-col items-center">
 				<img
 					className="square-[160px] tall:square-[260px] xtall:square-[350px] rounded-2xl mb-2"
-					src={room.playing.spotifyTrackData.album.images[0].url}
+					src={room.playing.spotifyTrackData.album.images[0]?.url}
 				/>
 
-				<TypographyH3 className="mb-1">
+				<TypographyH3 className="">
 					{room.playing.spotifyTrackData.name}
 				</TypographyH3>
 
 				<TypographyMuted className="text-xs">
 					{room.playing.spotifyTrackData.artists[0].name}
 				</TypographyMuted>
+				<TimeSlider />
 			</section>
 
 			<section>
@@ -102,7 +103,9 @@ function Radio() {
 								>
 									<div className="grid grid-cols-[40px_1fr] gap-4">
 										<img
-											src={track.spotifyTrackData.album.images[2].url}
+											src={
+												track.spotifyTrackData.album.images[2]?.url // TODO: Sometimes the images are not available
+											}
 											className="rounded-md"
 										/>
 										<div>
@@ -143,7 +146,7 @@ function Radio() {
 							>
 								<div className="grid grid-cols-[40px_1fr] gap-4">
 									<img
-										src={track!.album.images[2].url}
+										src={track!.album.images[2]?.url} // TODO: Sometimes the images are not available
 										className="rounded-md"
 									/>
 									<div>
