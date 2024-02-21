@@ -70,9 +70,12 @@ export const AddTrackButton = ({ roomId, classname }: AddTrackButtonProps) => {
 				<div className=" overflow-auto max-h-80">
 					<ul className="space-y-2">
 						{results.map((track: any) => (
-							<li key={track._id} className=" flex">
+							<li key={track._id} className=" flex items-center">
 								<div className="grid grid-cols-[40px_1fr] gap-4">
-									<img src={track.album.images[2].url} className="rounded-md" />
+									<img
+										src={track.album.images[2].url}
+										className="rounded-md place-self-center"
+									/>
 
 									<div>
 										<div className="text-sm">{track.name}</div>
@@ -82,7 +85,8 @@ export const AddTrackButton = ({ roomId, classname }: AddTrackButtonProps) => {
 									</div>
 								</div>
 								<Button
-									className="ml-auto"
+									className="ml-auto rounded-full"
+									size={'icon'}
 									onClick={async () => {
 										requestTrack({
 											spotifyTrackId: track.id,
