@@ -83,7 +83,7 @@ function Radio() {
 				<TimeSlider />
 			</section>
 
-			<section>
+			<section className="w-full md:max-w-xl">
 				<TypographyH3 className="mb-3 flex justify-between">
 					<span>Liste d'attente</span>
 
@@ -92,7 +92,7 @@ function Radio() {
 
 				<hr />
 
-				<ScrollArea className="w-[600px] h-[360px]">
+				<ScrollArea className="h-[360px]">
 					<ul className="space-y-3 pt-4">
 						{room.queue
 							.filter(track => !track.playedAt)
