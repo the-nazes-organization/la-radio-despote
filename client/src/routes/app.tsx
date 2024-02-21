@@ -55,7 +55,7 @@ function LayoutComponent() {
 								<img
 									src={room.playing.spotifyTrackData.album.images[0].url}
 									alt={room.name}
-									className="square-12 rounded"
+									className="square-12 rounded min-w-12"
 								/>
 							</Link>
 						</TooltipTrigger>
