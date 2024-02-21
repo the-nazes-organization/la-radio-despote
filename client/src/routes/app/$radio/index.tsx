@@ -13,11 +13,12 @@ import { AddTrackButton } from '@/components/add-track-button';
 import { TimeSlider } from '@/components/time-slider';
 import { CommandMenu } from '@/components/ui/command-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
 import { Plus, X } from 'lucide-react';
 import { useEffect } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
-import { useSpotifyPlayerStore } from '../../../lib/providers/SpotifyPlayerProvider';
+import { LikeButton } from './-components/like-button';
 
 export const Route = createFileRoute('/app/$radio/')({
 	loader: async ({ params: { radio } }) => {
@@ -67,19 +68,25 @@ function Radio() {
 
 			<TypographyH1 className="mb-12">{room.details.name}</TypographyH1>
 
-			<section className="flex flex-col items-center">
-				<img
-					className="square-[160px] tall:square-[260px] xtall:square-[350px] rounded-2xl mb-2"
-					src={room.playing.spotifyTrackData.album.images[0]?.url}
-				/>
+			<section>
+				<div className="flex items-center">
+					<div className="flex flex-col items-center">
+						<img
+							className="square-[160px] tall:square-[260px] xtall:square-[350px] rounded-2xl mb-2"
+							src={room.playing.spotifyTrackData.album.images[0]?.url}
+						/>
+						<TypographyH3 className="">
+							{room.playing.spotifyTrackData.name}
+						</TypographyH3>
 
-				<TypographyH3 className="">
-					{room.playing.spotifyTrackData.name}
-				</TypographyH3>
-
-				<TypographyMuted className="text-xs">
-					{room.playing.spotifyTrackData.artists[0].name}
-				</TypographyMuted>
+						<TypographyMuted className="text-xs">
+							{room.playing.spotifyTrackData.artists[0].name}
+						</TypographyMuted>
+					</div>
+					<div className="pl-3">
+						<LikeButton />
+					</div>
+				</div>
 				<TimeSlider />
 			</section>
 
