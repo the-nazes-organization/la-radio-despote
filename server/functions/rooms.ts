@@ -123,3 +123,19 @@ export const getRecommendatedTrack = query({
 		});
 	},
 });
+
+export const removeTrackFromRecommendations = mutation({
+	args: {
+		roomId: v.id('rooms'),
+		spotifyTrackDataId: v.id('spotifyTrackData'),
+	},
+	handler: async (ctx, args) => {
+		const room = await ctx.db.get(args.roomId);
+		const recommendations = room!.recommendations.filter(
+			recommendation => recommendation !== args.spotifyTrackDataId,
+		);
+		return ctx.db.patch(args.roomId, {
+			recommendations,
+		});
+	},
+});

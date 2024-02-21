@@ -33,6 +33,25 @@ export const requestTrack = action({
 			},
 		);
 
+		// const room = await ctx.runQuery(api.rooms.get, { roomId: args.roomId });
+		// if (room.recommendations.includes(trackId)) {
+		// }
+
+		// if (test?.recommendations?.includes(trackId)) {
+		// 	// const recommendations = room.recommendations.filter(
+		// 	// 	recommendation => recommendation !== trackId,
+		// 	// );
+		// 	await ctx.runMutation(api.rooms.updateRecommendations, {
+		// 		roomId: args.roomId,
+		// 		// recommendations,
+		// 	});
+		// }
+
+		await ctx.runMutation(api.rooms.removeTrackFromRecommendations, {
+			roomId: args.roomId,
+			spotifyTrackDataId,
+		});
+
 		return trackId;
 	},
 });
