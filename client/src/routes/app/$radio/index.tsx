@@ -142,7 +142,7 @@ function Radio() {
 					</ul>
 
 					<TypographyLarge className="mt-8 mb-4 flex">
-						Recommandations
+						Recommendations
 					</TypographyLarge>
 
 					<ul className="space-y-3">
