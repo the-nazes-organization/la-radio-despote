@@ -3,9 +3,9 @@
 import { v } from 'convex/values';
 import { spotifyApi } from '../lib/spotifyApi';
 import { api, internal } from './_generated/api';
+import { Id } from './_generated/dataModel';
 import { action } from './_generated/server';
 import { formatTrack } from './_helpers';
-import { Id } from './_generated/dataModel';
 
 export const requestTrack = action({
 	args: {
@@ -80,6 +80,7 @@ export const playTrack = action({
 		// We look for recommendations
 		const recommendationsBySpotify = await spotifyApi.recommendations.get({
 			seed_tracks: [nextTrackInQueue.spotifyTrackData.spotifyId],
+			limit: 5,
 		});
 
 		// We save the recommendations
