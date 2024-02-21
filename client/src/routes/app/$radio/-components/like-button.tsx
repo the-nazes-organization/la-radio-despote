@@ -10,24 +10,30 @@ export const LikeButton = ({}: LikeButtonProps) => {
 	const player = useSpotifyPlayerStore();
 	const [isLiked, setIsLiked] = useState(false);
 
+	const currentTrack = player.state?.track_window.current_track;
+
 	useEffect(() => {
 		if (!player.state?.track_window.current_track) return;
 		const fetchLiked = async () => {
-			const [res] = (await player.sdk.makeRequest(
-				'GET',
-				`me/tracks/contains?ids=${player.state?.track_window.current_track.id}`,
-			)) as [boolean];
-			setIsLiked(res);
+			if (currentTrack?.id) {
+				const [isLiked] = await player.sdk.currentUser.tracks.hasSavedTracks([
+					currentTrack.id,
+				]);
+				setIsLiked(isLiked);
+			}
 		};
 		fetchLiked();
 	}, [player.state?.track_window.current_track]);
 
 	const handleLike = async () => {
-		await player.sdk.makeRequest(
-			isLiked ? 'DELETE' : 'PUT',
-			`me/tracks?ids=${player.state?.track_window.current_track.id}`,
-		);
-		setIsLiked(!isLiked);
+		if (currentTrack?.id) {
+			isLiked
+				? await player.sdk.currentUser.tracks.removeSavedTracks([
+						currentTrack.id,
+					])
+				: await player.sdk.currentUser.tracks.saveTracks([currentTrack.id]);
+			setIsLiked(!isLiked);
+		}
 	};
 
 	return (
