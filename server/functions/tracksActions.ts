@@ -109,7 +109,7 @@ export const playTrack = action({
 		);
 
 		// We update the room with the recommendations
-		await ctx.runMutation(api.rooms.updateRoom, {
+		await ctx.runMutation(api.rooms.updateRoomRecommendations, {
 			roomId: args.roomId,
 			recommendations: recommendedTrackIds,
 		});
