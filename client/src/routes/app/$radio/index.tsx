@@ -7,7 +7,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { preloadQuery } from '@/lib/preload-query';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useAction, useMutation, usePreloadedQuery } from 'convex/react';
+import {
+	useAction,
+	useConvexAuth,
+	useMutation,
+	usePreloadedQuery,
+} from 'convex/react';
 
 import { AddTrackButton } from '@/components/add-track-button';
 import { TimeSlider } from '@/components/time-slider';
@@ -39,6 +44,8 @@ export const Route = createFileRoute('/app/$radio/')({
 });
 
 function Radio() {
+	const { isAuthenticated, isLoading } = useConvexAuth();
+	console.log('🐒 isAuthenticated', isAuthenticated);
 	const params = Route.useParams();
 
 	const room = usePreloadedQuery(Route.useLoaderData());
@@ -48,6 +55,8 @@ function Radio() {
 	const removeTrack = useMutation(api.tracks.removeTrack);
 
 	const requestTrack = useAction(api.tracksActions.requestTrack);
+
+	const addUserToRoom = useAction(api.usersActions.addUserToRoom);
 
 	useEffect(() => {
 		if (player.deviceId && room.playing) {
@@ -61,6 +70,12 @@ function Radio() {
 			player.player!.pause();
 		};
 	}, [player.deviceId, room.playing]);
+
+	useEffect(() => {
+		addUserToRoom({
+			roomId: params.radio as Id<'rooms'>,
+		});
+	}, []);
 
 	return (
 		<div className="p-6 border rounded-md h-full flex flex-col justify-between items-center">

@@ -1,12 +1,44 @@
-import { ConvexProvider, ConvexReactClient } from 'convex/react';
-import { ReactNode } from 'react';
+import { ConvexProviderWithAuth, ConvexReactClient } from 'convex/react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
+import { useSpotifyPlayerStore } from './SpotifyPlayerProvider';
 
-export const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
+function useAuthFromProviderX() {
+	const player = useSpotifyPlayerStore();
+	const [isLoading, setIsLoading] = useState(false);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+	const fetchAccessToken = useCallback(async () => {
+		setIsLoading(true);
+		const accesToken = await player.sdk.getAccessToken();
+		console.log('🔑 accesToken', accesToken);
+		setIsAuthenticated(accesToken?.access_token !== undefined);
+		setIsLoading(false);
+		return accesToken?.access_token || '';
+	}, [player]);
+
+	return useMemo(
+		() => ({
+			fetchAccessToken,
+			isLoading,
+			isAuthenticated,
+		}),
+		[fetchAccessToken, isLoading, isAuthenticated],
+	);
+}
+
+export const convex = new ConvexReactClient(
+	import.meta.env.VITE_CONVEX_URL,
+	{},
+);
 
 export default function ConvexClientProvider({
 	children,
 }: {
 	children: ReactNode;
 }) {
-	return <ConvexProvider client={convex}>{children}</ConvexProvider>;
+	return (
+		<ConvexProviderWithAuth client={convex} useAuth={useAuthFromProviderX}>
+			{children}
+		</ConvexProviderWithAuth>
+	);
 }

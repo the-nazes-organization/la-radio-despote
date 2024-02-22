@@ -1,8 +1,8 @@
 export default {
 	providers: [
 		{
-			domain: "https://dominant-blowfish-96.clerk.accounts.dev",
-			applicationID: "convex",
+			domain: 'accounts.spotify.com',
+			applicationID: '9a069834c88b40a6882325eb6794f7ac',
 		},
 	],
 };
