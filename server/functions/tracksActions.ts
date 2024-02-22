@@ -41,7 +41,7 @@ export const requestTrack = action({
 		// 	// const recommendations = room.recommendations.filter(
 		// 	// 	recommendation => recommendation !== trackId,
 		// 	// );
-		// 	await ctx.runMutation(api.rooms.updateRecommendations, {
+		// 	await ctx.runMutation(api.rooms.updateRoom, {
 		// 		roomId: args.roomId,
 		// 		// recommendations,
 		// 	});
@@ -109,7 +109,7 @@ export const playTrack = action({
 		);
 
 		// We update the room with the recommendations
-		await ctx.runMutation(api.rooms.updateRecommendations, {
+		await ctx.runMutation(api.rooms.updateRoom, {
 			roomId: args.roomId,
 			recommendations: recommendedTrackIds,
 		});
