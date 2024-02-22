@@ -69,12 +69,12 @@ export const AddTrackButton = ({ roomId, classname }: AddTrackButtonProps) => {
 				</div>
 				<div className=" overflow-auto max-h-80">
 					<ul className="space-y-2">
-						{results.map((track: any) => (
-							<li key={track._id} className=" flex items-center">
+						{results.map(track => (
+							<li key={track.id} className=" flex items-center">
 								<div className="grid grid-cols-[40px_1fr] gap-4">
 									<img
 										src={track.album.images[2].url}
-										className="rounded-md place-self-center"
+										className="rounded-md place-self-center="
 									/>
 
 									<div>
