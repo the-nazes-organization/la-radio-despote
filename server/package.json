@@ -13,7 +13,8 @@
 	},
 	"resolutions": {},
 	"dependencies": {
-		"convex": "^1.9.0"
+		"convex": "^1.9.0",
+		"convex-helpers": "^0.1.22"
 	},
 	"devDependencies": {
 		"@types/node": "^20.11.19"

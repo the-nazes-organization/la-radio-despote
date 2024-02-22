@@ -1363,6 +1363,11 @@ concurrently@^8.2.2:
     tree-kill "^1.2.2"
     yargs "^17.7.2"
 
+convex-helpers@^0.1.22:
+  version "0.1.22"
+  resolved "https://registry.yarnpkg.com/convex-helpers/-/convex-helpers-0.1.22.tgz#bf58d99ff60e30c4f8b70f4c85c340ca2bc1a37d"
+  integrity sha512-UTDxdbwlm5jBGPd9U5inatjuThg+YyQyuJ+cH2vAX+A4mWM7c2REZQ+LbjUnIxkAjxCRNq3ZD61qqQW9x6a6EQ==
+
 convex@^1.9.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/convex/-/convex-1.9.0.tgz#01bfe4cd29a356546e30201a53a3b213e18ad03a"

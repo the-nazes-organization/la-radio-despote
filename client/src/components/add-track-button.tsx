@@ -16,6 +16,7 @@ import {
 	DialogTrigger,
 } from './ui/dialog';
 import { Input } from './ui/input';
+import { useAuthedAction } from '@/lib/useAuthedAction';
 
 interface AddTrackButtonProps {
 	roomId: Id<'rooms'>;
@@ -24,7 +25,7 @@ interface AddTrackButtonProps {
 
 export const AddTrackButton = ({ roomId, classname }: AddTrackButtonProps) => {
 	const player = useSpotifyPlayerStore();
-	const requestTrack = useAction(api.tracksActions.requestTrack);
+	const authedRequestTrack = useAuthedAction(api.tracksActions.requestTrack);
 
 	const [query, setQuery] = useState('');
 	const [results, setResults] = useState<Track[]>([]);
@@ -88,7 +89,7 @@ export const AddTrackButton = ({ roomId, classname }: AddTrackButtonProps) => {
 									className="ml-auto rounded-full"
 									size={'icon'}
 									onClick={async () => {
-										requestTrack({
+										authedRequestTrack({
 											spotifyTrackId: track.id,
 											roomId: roomId,
 										}).then(d => console.log('✅', d));

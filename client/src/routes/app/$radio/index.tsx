@@ -24,6 +24,7 @@ import { useEffect } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
 import { LikeButton } from './-components/like-button';
+import { useAuthedAction } from '@/lib/useAuthedAction';
 
 export const Route = createFileRoute('/app/$radio/')({
 	loader: async ({ params: { radio } }) => {
@@ -54,7 +55,7 @@ function Radio() {
 
 	const removeTrack = useMutation(api.tracks.removeTrack);
 
-	const requestTrack = useAction(api.tracksActions.requestTrack);
+	const requestTrack = useAuthedAction(api.tracksActions.requestTrack);
 
 	const addUserToRoom = useAction(api.usersActions.addUserToRoom);
 

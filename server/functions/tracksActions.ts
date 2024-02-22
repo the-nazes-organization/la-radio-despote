@@ -6,8 +6,9 @@ import { api, internal } from './_generated/api';
 import { Id } from './_generated/dataModel';
 import { action } from './_generated/server';
 import { formatTrack } from './_helpers';
+import { authedAction } from '../lib/authed';
 
-export const requestTrack = action({
+export const requestTrack = authedAction({
 	args: {
 		spotifyTrackId: v.string(),
 		userId: v.optional(v.id('users')), // todo remove optional
@@ -15,6 +16,7 @@ export const requestTrack = action({
 	},
 
 	handler: async (ctx, args) => {
+		console.log(`I AM ✅`, ctx.me.display_name);
 		const track = await spotifyApi.tracks.get(args.spotifyTrackId);
 
 		const [spotifyTrackDataId] = await ctx.runMutation(
@@ -75,6 +77,7 @@ export const playTrack = action({
 			await ctx.runAction(api.tracksActions.requestTrack, {
 				roomId: args.roomId,
 				spotifyTrackId: recommendation.spotifyId,
+				token: '',
 			});
 
 			nextTrackInQueue = (await ctx.runQuery(api.tracks.getNextTrackInQueue, {
