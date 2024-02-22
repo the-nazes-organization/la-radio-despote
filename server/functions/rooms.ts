@@ -75,8 +75,12 @@ export const get = query({
 			});
 
 		const recommendationsPromise = detailsPromise
-			.then(details => details!.recommendations.map(_id => ctx.db.get(_id)))
-			.then(recommendationsPromises => Promise.all(recommendationsPromises));
+			.then(details =>
+				details!.recommendations?.map(_id => ctx.db.get(_id) ?? []),
+			)
+			.then(recommendationsPromises =>
+				Promise.all(recommendationsPromises ?? []),
+			);
 
 		const [details, queue, playing, recommendations] = await Promise.all([
 			detailsPromise,
@@ -97,13 +101,17 @@ export const get = query({
 /**
  * Update recommendations.
  */
-export const updateRecommendations = mutation({
+export const updateRoom = mutation({
 	args: {
 		roomId: v.id('rooms'),
-		recommendations: v.array(v.id('spotifyTrackData')),
+		recommendations: v.optional(v.array(v.id('spotifyTrackData'))),
+		listeners: v.optional(v.array(v.id('spotifyUserProfile'))),
 	},
 	handler: async (ctx, args) => {
-		return ctx.db.patch(args.roomId, { recommendations: args.recommendations });
+		return ctx.db.patch(args.roomId, {
+			recommendations: args.recommendations,
+			listeners: args.listeners,
+		});
 	},
 });
 
