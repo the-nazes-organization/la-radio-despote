@@ -101,15 +101,27 @@ export const get = query({
 /**
  * Update recommendations.
  */
-export const updateRoom = mutation({
+export const updateRoomRecommendations = mutation({
 	args: {
 		roomId: v.id('rooms'),
-		recommendations: v.optional(v.array(v.id('spotifyTrackData'))),
-		listeners: v.optional(v.array(v.id('spotifyUserProfile'))),
+		recommendations: v.array(v.id('spotifyTrackData')),
 	},
 	handler: async (ctx, args) => {
 		return ctx.db.patch(args.roomId, {
 			recommendations: args.recommendations,
+		});
+	},
+});
+/**
+ * Update listeners.
+ */
+export const updateRoomListeners = mutation({
+	args: {
+		roomId: v.id('rooms'),
+		listeners: v.array(v.id('users')),
+	},
+	handler: async (ctx, args) => {
+		return ctx.db.patch(args.roomId, {
 			listeners: args.listeners,
 		});
 	},
