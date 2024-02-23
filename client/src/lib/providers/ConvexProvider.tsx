@@ -26,7 +26,7 @@ function useAuthFromProviderX() {
 	);
 }
 
-export const convex = new ConvexReactClient(
+export const convexClient = new ConvexReactClient(
 	import.meta.env.VITE_CONVEX_URL,
 	{},
 );
@@ -37,7 +37,10 @@ export default function ConvexClientProvider({
 	children: ReactNode;
 }) {
 	return (
-		<ConvexProviderWithAuth client={convex} useAuth={useAuthFromProviderX}>
+		<ConvexProviderWithAuth
+			client={convexClient}
+			useAuth={useAuthFromProviderX}
+		>
 			{children}
 		</ConvexProviderWithAuth>
 	);

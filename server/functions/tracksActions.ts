@@ -16,7 +16,7 @@ export const requestTrack = authedAction({
 	},
 
 	handler: async (ctx, args) => {
-		console.log(`I AM ✅`, ctx.me.display_name);
+		// console.log(`I AM ✅`, ctx.me.display_name);
 		const track = await spotifyApi.tracks.get(args.spotifyTrackId);
 
 		const [spotifyTrackDataId] = await ctx.runMutation(

@@ -1,4 +1,4 @@
-import { convex } from '@/lib/providers/ConvexProvider';
+import { convexClient } from '@/lib/providers/ConvexProvider';
 import { Preloaded } from 'convex/react';
 import {
 	FunctionArgs,
@@ -17,5 +17,5 @@ export const preloadQuery = async <
 	({
 		_name: getFunctionName(query),
 		_argsJSON: convexToJson(args),
-		_valueJSON: convexToJson(await convex.query(query, args)),
+		_valueJSON: convexToJson(await convexClient.query(query, args)),
 	}) as Preloaded<TQuery>;

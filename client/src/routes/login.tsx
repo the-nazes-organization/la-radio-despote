@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button';
+import { convexClient } from '@/lib/providers/ConvexProvider';
 import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
 import { createFileRoute, redirect } from '@tanstack/react-router';
+import { api } from 'server';
 
 export const Route = createFileRoute('/login')({
 	validateSearch: (search: Record<string, unknown>) => {
@@ -21,13 +23,20 @@ export const Route = createFileRoute('/login')({
 		}
 
 		if (opts.search.code) {
-			await store.sdk.authenticate().then(({ authenticated }) => {
-				if (authenticated) {
-					throw redirect({
-						to: '/app',
-					});
-				}
-			});
+			await store.sdk
+				.authenticate()
+				.then(async ({ authenticated, accessToken }) => {
+					await convexClient.action(
+						api.auth.actions.createNewSessionInDatabase,
+						{ token: accessToken.access_token },
+					);
+
+					if (authenticated) {
+						throw redirect({
+							to: '/app',
+						});
+					}
+				});
 		}
 	},
 	component: Login,

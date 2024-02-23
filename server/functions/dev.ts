@@ -46,11 +46,15 @@ const MAX_SPOTIFY_PROFILE = {
 };
 
 export const seedInitialData = internalMutation(async ctx => {
-	const userId = await ctx.db.insert('users', {});
-
-	await ctx.db.insert('users', {
+	const userId = await ctx.db.insert('users', {
+		loggedInAt: Date.now(),
 		spotifyUserProfile: MAX_SPOTIFY_PROFILE,
 	});
+
+	// await ctx.db.insert('users', {
+	// 	spotifyUserProfile: MAX_SPOTIFY_PROFILE,
+	// 	loggedInAt: Date.now(),
+	// });
 	// await ctx.db.insert('users', {
 	// 	username: 'ben',
 	// 	email: 'ben@example.com',
