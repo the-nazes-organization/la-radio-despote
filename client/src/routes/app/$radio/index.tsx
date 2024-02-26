@@ -7,24 +7,19 @@ import {
 import { Button } from '@/components/ui/button';
 import { preloadQuery } from '@/lib/preload-query';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import {
-	useAction,
-	useConvexAuth,
-	useMutation,
-	usePreloadedQuery,
-} from 'convex/react';
+import { useAction, useMutation, usePreloadedQuery } from 'convex/react';
 
 import { AddTrackButton } from '@/components/add-track-button';
 import { TimeSlider } from '@/components/time-slider';
 import { CommandMenu } from '@/components/ui/command-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
+import { useAuthedAction } from '@/lib/useAuthedAction';
 import { Plus, X } from 'lucide-react';
 import { useEffect } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
 import { LikeButton } from './-components/like-button';
-import { useAuthedAction } from '@/lib/useAuthedAction';
 
 export const Route = createFileRoute('/app/$radio/')({
 	loader: async ({ params: { radio } }) => {
@@ -45,8 +40,6 @@ export const Route = createFileRoute('/app/$radio/')({
 });
 
 function Radio() {
-	const { isAuthenticated, isLoading } = useConvexAuth();
-	console.log('🐒 isAuthenticated', isAuthenticated);
 	const params = Route.useParams();
 
 	const room = usePreloadedQuery(Route.useLoaderData());
