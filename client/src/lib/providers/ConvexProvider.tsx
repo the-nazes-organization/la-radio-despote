@@ -10,7 +10,6 @@ function useAuthFromProviderX() {
 	const fetchAccessToken = useCallback(async () => {
 		setIsLoading(true);
 		const accesToken = await player.sdk.getAccessToken();
-		console.log('🔑 accesToken', accesToken);
 		setIsAuthenticated(accesToken?.access_token !== undefined);
 		setIsLoading(false);
 		return accesToken?.access_token || '';
