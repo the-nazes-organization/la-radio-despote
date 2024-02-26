@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { internalMutation, mutation } from '../_generated/server';
+import { internalMutation } from '../_generated/server';
 import { spotifyUserProfileSchema } from '../schema';
 
 export const createSession = internalMutation({
@@ -16,7 +16,7 @@ export const createSession = internalMutation({
 			.unique();
 
 		if (existingUser) {
-			return Promise.all([
+			await Promise.all([
 				ctx.db.insert('sessions', {
 					token: args.token,
 					userId: existingUser._id,
@@ -26,6 +26,7 @@ export const createSession = internalMutation({
 					loggedInAt: Date.now(),
 				}),
 			]);
+			return;
 		}
 
 		const newUserId = await ctx.db.insert('users', {
