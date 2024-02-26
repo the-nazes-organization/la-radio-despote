@@ -7,7 +7,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { preloadQuery } from '@/lib/preload-query';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useAction, useMutation, usePreloadedQuery } from 'convex/react';
+import { useMutation, usePreloadedQuery } from 'convex/react';
 
 import { AddTrackButton } from '@/components/add-track-button';
 import { TimeSlider } from '@/components/time-slider';
@@ -15,6 +15,7 @@ import { CommandMenu } from '@/components/ui/command-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
 import { useAuthedAction } from '@/lib/useAuthedAction';
+import { useAuthedMutation } from '@/lib/useAuthedMutation';
 import { Plus, X } from 'lucide-react';
 import { useEffect } from 'react';
 import { api } from 'server';
@@ -50,7 +51,10 @@ function Radio() {
 
 	const requestTrack = useAuthedAction(api.tracksActions.requestTrack);
 
-	const addUserToRoom = useAction(api.usersActions.addUserToRoom);
+	const addUserToRoom = useAuthedMutation(api.rooms2.mutations.addUserToRoom);
+	const removeUserFromRoom = useAuthedMutation(
+		api.rooms2.mutations.removeUserFromRoom,
+	);
 
 	useEffect(() => {
 		if (player.deviceId && room.playing) {
@@ -69,7 +73,14 @@ function Radio() {
 		addUserToRoom({
 			roomId: params.radio as Id<'rooms'>,
 		});
+		return () => {
+			removeUserFromRoom({
+				roomId: params.radio as Id<'rooms'>,
+			});
+		};
 	}, []);
+
+	console.log(`👨‍🚒`, room.details.listeners);
 
 	return (
 		<div className="p-6 border rounded-md h-full flex flex-col justify-between items-center">
