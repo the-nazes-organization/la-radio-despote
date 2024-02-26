@@ -41,7 +41,8 @@ export const authedMutation = customMutation(mutation, {
 		const session = await ctx.db
 			.query('sessions')
 			.withIndex('by_token', q => q.eq('token', token))
-			.unique();
+			.first();
+		// .unique();
 
 		if (!session) {
 			throw new Error('No session found');
@@ -60,7 +61,7 @@ export const authedMutation = customMutation(mutation, {
 export const authedAction = customAction(action, {
 	args: { token: v.optional(v.string()) },
 	input: async (ctx, { token, ...args }) => {
-		if (process.env.DEV_API_KEY && action.name === 'seed') {
+		if (process.env.DEV_API_KEY) {
 			return {
 				ctx: {
 					...ctx,
