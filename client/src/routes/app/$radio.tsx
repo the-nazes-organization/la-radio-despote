@@ -1,6 +1,8 @@
 import { preloadQuery } from '@/lib/preload-query';
+import { useAuthedMutation } from '@/lib/useAuthedMutation';
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router';
 import { usePreloadedQuery } from 'convex/react';
+import { useEffect } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
 import { ListenersList } from './$radio/-components/listeners-list';
@@ -23,7 +25,23 @@ export const Route = createFileRoute('/app/$radio')({
 });
 
 function LayoutComponent() {
+	const params = Route.useParams();
 	const room = usePreloadedQuery(Route.useLoaderData());
+
+	const addUserToRoom = useAuthedMutation(api.rooms2.mutations.addUserToRoom);
+	const removeUserFromRoom = useAuthedMutation(
+		api.rooms2.mutations.removeUserFromRoom,
+	);
+	useEffect(() => {
+		addUserToRoom({
+			roomId: params.radio as Id<'rooms'>,
+		});
+		return () => {
+			removeUserFromRoom({
+				roomId: params.radio as Id<'rooms'>,
+			});
+		};
+	}, []);
 
 	return (
 		<>
