@@ -4,9 +4,8 @@ import {
 	customQuery,
 } from 'convex-helpers/server/customFunctions.js';
 import { v } from 'convex/values';
-import { action, mutation, query } from '../functions/_generated/server';
 import { internal } from '../functions/_generated/api';
-import { FunctionReturnType } from 'convex/server';
+import { action, mutation, query } from '../functions/_generated/server';
 
 export const authedQuery = customQuery(query, {
 	args: { token: v.optional(v.string()) },
@@ -60,6 +59,14 @@ export const authedMutation = customMutation(mutation, {
 export const authedAction = customAction(action, {
 	args: { token: v.optional(v.string()) },
 	input: async (ctx, { token, ...args }) => {
+		if (process.env.DEV_API_KEY) {
+			return {
+				ctx: {
+					...ctx,
+				},
+				args: { ...args },
+			};
+		}
 		if (!token) throw new Error('Token is required');
 
 		const me = (await ctx.runQuery(internal.users.queries.getUserSession, {
