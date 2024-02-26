@@ -64,6 +64,7 @@ export const authedAction = customAction(action, {
 			return {
 				ctx: {
 					...ctx,
+					me: {} as Doc<'users'>,
 				},
 				args: { ...args },
 			};
