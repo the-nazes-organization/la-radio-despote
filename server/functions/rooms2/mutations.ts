@@ -15,8 +15,17 @@ export const addUserToRoom = authedMutation({
 			throw new Error('[ROOM - addUserToRoom]: User not found');
 		}
 
+		const userId = ctx.me.spotifyUserProfile.id;
+
+		const userAlreadyInRoom = room?.listeners?.some(
+			listener => listener.id === userId,
+		);
+		const listeners = userAlreadyInRoom
+			? room?.listeners
+			: [...(room?.listeners ?? []), ctx.me.spotifyUserProfile];
+
 		await ctx.db.patch(args.roomId, {
-			listeners: [...(room?.listeners ?? []), ctx.me.spotifyUserProfile],
+			listeners,
 		});
 	},
 });
