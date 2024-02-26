@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
 	DropdownMenu,
@@ -13,6 +14,11 @@ interface ListenersListProps {
 	listeners: Array<Doc<'users'>['spotifyUserProfile']>;
 }
 
+const getAvatarFallbackName = (listener: Doc<'users'>['spotifyUserProfile']) =>
+	listener.display_name
+		.split(' ')
+		.map(w => w[0])
+		.join('');
 export const ListenersList = ({ listeners }: ListenersListProps) => {
 	return (
 		<DropdownMenu>
@@ -28,18 +34,22 @@ export const ListenersList = ({ listeners }: ListenersListProps) => {
 				sideOffset={8}
 				align="start"
 			>
-				{listeners.map(listener => (
-					<DropdownMenuItem key={listener.id}>
-						<div className="flex items-center space-x-2">
-							<img
-								src={listener.images[0]?.url}
-								alt={listener.display_name}
-								className="w-8 h-8 rounded-full"
-							/>
-							<span>{listener.display_name}</span>
-						</div>
-					</DropdownMenuItem>
-				))}
+				{listeners.map(listener => {
+					const avatarFallbackName = getAvatarFallbackName(listener);
+					return (
+						<DropdownMenuItem key={listener.id}>
+							<div className="flex items-center space-x-2">
+								<Avatar>
+									<AvatarImage
+										src={listener.images[0].url ?? listener.images[1].url}
+									/>
+									<AvatarFallback>{avatarFallbackName}</AvatarFallback>
+								</Avatar>
+								<span>{listener.display_name}</span>
+							</div>
+						</DropdownMenuItem>
+					);
+				})}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
