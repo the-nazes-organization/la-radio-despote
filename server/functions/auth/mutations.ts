@@ -22,10 +22,12 @@ export const createSession = internalMutation({
 					userId: existingUser._id,
 				}),
 
-				ctx.db.patch(existingUser._id, {
+				await ctx.db.patch(existingUser._id, {
+					spotifyUserProfile: args.spotifyUserProfile,
 					loggedInAt: Date.now(),
 				}),
 			]);
+
 			return;
 		}
 
