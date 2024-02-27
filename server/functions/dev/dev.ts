@@ -1,5 +1,5 @@
-import { api, internal } from './_generated/api';
-import { internalAction, internalMutation } from './_generated/server';
+import { internal } from '../_generated/api';
+import { internalAction, internalMutation } from '../_generated/server';
 
 export const drop = internalMutation(async ctx => {
 	for (const table of [
@@ -71,20 +71,20 @@ export const seedInitialData = internalMutation(async ctx => {
 });
 
 export const seed = internalAction(async ctx => {
-	await ctx.runMutation(internal.dev.drop, {});
+	await ctx.runMutation(internal.dev.dev.drop, {});
 
 	const { roomId, userId } = await ctx.runMutation(
-		internal.dev.seedInitialData,
+		internal.dev.dev.seedInitialData,
 		{},
 	);
 
-	await ctx.runAction(api.tracksActions.requestTrack, {
+	await ctx.runAction(internal.dev.actions.internalRequestTrack, {
 		roomId,
 		spotifyTrackId: '4b67MDtD92iU5Rsys7yWgy',
 		userId,
 	});
 
-	await ctx.runAction(api.tracksActions.playTrack, {
+	await ctx.runAction(internal.dev.actions.playTrack, {
 		roomId,
 	});
 });

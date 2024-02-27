@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "convex dev",
 		"convex": "convex",
-		"seed": "convex run dev:seed"
+		"seed": "convex run dev/dev:seed"
 	},
 	"exports": {
 		".": "./index.ts"
