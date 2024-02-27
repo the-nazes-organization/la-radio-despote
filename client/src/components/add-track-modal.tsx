@@ -1,5 +1,6 @@
 import { useAuthedAction } from '@/lib/useAuthedAction';
 import type { Track } from '@spotify/web-api-ts-sdk';
+import { Music } from 'lucide-react';
 import { useState } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
@@ -28,7 +29,10 @@ export const AddTrackModal = ({ roomId, classname }: AddTrackModalProps) => {
 	return (
 		<Dialog>
 			<DialogTrigger asChild className={classname}>
-				<Button>Add a track</Button>
+				<Button className="md:space-x-2">
+					<span className="hidden md:block">Add a track</span>
+					<Music />+
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
