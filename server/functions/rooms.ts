@@ -1,7 +1,5 @@
 import { v } from 'convex/values';
-import { Doc, Id } from './_generated/dataModel';
 import { mutation, query } from './_generated/server';
-import { spotifyUserProfileSchema } from './schema';
 
 /**
  * List all rooms.
@@ -111,23 +109,6 @@ export const updateRoomRecommendations = mutation({
 	handler: async (ctx, args) => {
 		return ctx.db.patch(args.roomId, {
 			recommendations: args.recommendations,
-		});
-	},
-});
-/**
- * Update listeners.
- */
-export const updateRoomListeners = mutation({
-	args: {
-		roomId: v.id('rooms'),
-		listeners: v.array(spotifyUserProfileSchema),
-	},
-	handler: async (
-		ctx,
-		args: { roomId: Id<'rooms'>; listeners: Doc<'rooms'>['listeners'] },
-	) => {
-		return ctx.db.patch(args.roomId, {
-			listeners: args.listeners,
 		});
 	},
 });
