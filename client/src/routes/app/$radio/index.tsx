@@ -15,7 +15,6 @@ import { TimeSlider } from '@/components/time-slider';
 import { CommandMenu } from '@/components/ui/command-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
-import { useAuthedAction } from '@/lib/useAuthedAction';
 import { X } from 'lucide-react';
 import { useEffect } from 'react';
 import { api } from 'server';
@@ -49,8 +48,6 @@ function Radio() {
 	const player = useSpotifyPlayerStore();
 
 	const removeTrack = useMutation(api.tracks.removeTrack);
-
-	const requestTrack = useAuthedAction(api.tracksActions.requestTrack);
 
 	useEffect(() => {
 		if (player.deviceId && room.playing) {
