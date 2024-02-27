@@ -15,12 +15,16 @@ import {
 	DialogTrigger,
 } from './ui/dialog';
 
-interface AddTrackModalProps {
+interface AddTrackModalButtonProps
+	extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	roomId: Id<'rooms'>;
 	classname?: string;
 }
 
-export const AddTrackModal = ({ roomId, classname }: AddTrackModalProps) => {
+export const AddTrackModalButton = ({
+	roomId,
+	classname,
+}: AddTrackModalButtonProps) => {
 	const [results, setResults] = useState<Track[]>([]);
 
 	return (
