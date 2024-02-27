@@ -36,6 +36,7 @@ export default defineSchema(
 			duration: v.number(),
 			room: v.id('rooms'),
 			spotifyTrackDataId: v.id('spotifyTrackData'),
+			scheduledFunctionId: v.optional(v.id('_scheduled_functions')),
 		})
 			.index('by_room_played_at', ['room', 'playedAt'])
 			.index('by_room_played_at_asked_at', ['room', 'playedAt', 'askedAt'])
