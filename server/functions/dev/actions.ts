@@ -38,9 +38,12 @@ export const internalRequestTrack = internalAction({
 			spotifyTrackDataId,
 		});
 
-		await ctx.runAction(api.rooms2.actions.getAndUpdateRoomRecommendations, {
-			roomId: args.roomId,
-		});
+		await ctx.runAction(
+			internal.dev.actions.internalGetAndUpdateRoomRecommendations,
+			{
+				roomId: args.roomId,
+			},
+		);
 
 		return trackId;
 	},
@@ -111,8 +114,49 @@ export const playTrack = internalAction({
 			},
 		);
 
-		await ctx.runAction(api.rooms2.actions.getAndUpdateRoomRecommendations, {
+		await ctx.runAction(
+			internal.dev.actions.internalGetAndUpdateRoomRecommendations,
+			{
+				roomId: args.roomId,
+			},
+		);
+	},
+});
+
+export const internalGetAndUpdateRoomRecommendations = internalAction({
+	args: {
+		roomId: v.id('rooms'),
+	},
+	handler: async (ctx, args) => {
+		const room = await ctx.runQuery(api.rooms.get, {
 			roomId: args.roomId,
+		});
+
+		if (!room) {
+			throw new Error(
+				'[ROOM - getAndUpdateRoomRecommendations]: Room not found',
+			);
+		}
+
+		// We look for recommendations from playing track and queue
+		const recommendationsBySpotify = await spotifyApi.recommendations.get({
+			seed_tracks: [
+				room.playing.spotifyTrackData.spotifyId,
+				...room.queue.map(track => track.spotifyTrackData.spotifyId),
+			],
+			limit: 5,
+		});
+
+		// We save the recommendations
+		const recommendedTrackIds = await ctx.runMutation(
+			internal.tracks.saveSpotifyTrackData,
+			{ tracksToSave: recommendationsBySpotify.tracks.map(formatTrack) },
+		);
+
+		// We update the room with the recommendations
+		await ctx.runMutation(api.rooms.updateRoomRecommendations, {
+			roomId: args.roomId,
+			recommendations: recommendedTrackIds,
 		});
 	},
 });
