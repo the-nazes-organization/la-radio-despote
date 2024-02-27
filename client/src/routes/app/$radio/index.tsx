@@ -11,16 +11,12 @@ import { useMutation, usePreloadedQuery } from 'convex/react';
 
 import { AddTrackButton } from '@/components/add-track-button';
 import { AddTrackModalButton } from '@/components/add-track-modal';
-import { TimeSlider } from '@/components/time-slider';
 import { CommandMenu } from '@/components/ui/command-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
 import { X } from 'lucide-react';
-import { useEffect } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
-import { LikeButton } from './-components/like-button';
-import { NextTrackButton } from './-components/next-track-button';
+import { PlayerDisplay } from './-components/player-display';
 
 export const Route = createFileRoute('/app/$radio/')({
 	loader: async ({ params: { radio } }) => {
@@ -43,52 +39,20 @@ export const Route = createFileRoute('/app/$radio/')({
 function Radio() {
 	const params = Route.useParams<{ radio: Id<'rooms'> }>();
 
-	const room = usePreloadedQuery(Route.useLoaderData());
-
-	const player = useSpotifyPlayerStore();
+	const { details, playing, queue, recommendations } = usePreloadedQuery(
+		Route.useLoaderData(),
+	);
 
 	const removeTrack = useMutation(api.tracks.removeTrack);
-
-	useEffect(() => {
-		if (player.deviceId && room.playing) {
-			player.actions.play({
-				spotifyId: room.playing.spotifyTrackData.spotifyId,
-				playedAt: room.playing.playedAt!,
-			});
-		}
-
-		return () => {
-			player.player!.pause();
-		};
-	}, [player.deviceId, room.playing]);
 
 	return (
 		<div className="p-6 border rounded-md h-full flex flex-col justify-between items-center">
 			<CommandMenu />
 
-			<TypographyH1 className="mb-12">{room.details.name}</TypographyH1>
+			<TypographyH1 className="mb-12">{details.name}</TypographyH1>
 
 			<section>
-				<div className="flex items-center">
-					<div className="flex flex-col items-center">
-						<img
-							className="square-[160px] tall:square-[260px] xtall:square-[350px] rounded-2xl mb-2"
-							src={room.playing.spotifyTrackData.album.images[0]?.url}
-						/>
-						<TypographyH3 className="">
-							{room.playing.spotifyTrackData.name}
-						</TypographyH3>
-
-						<TypographyMuted className="text-xs">
-							{room.playing.spotifyTrackData.artists[0].name}
-						</TypographyMuted>
-					</div>
-					<div className="pl-3 flex flex-col gap-2">
-						<NextTrackButton />
-						<LikeButton />
-					</div>
-				</div>
-				<TimeSlider />
+				{playing?._id ? <PlayerDisplay playing={playing} /> : null}
 			</section>
 
 			<section className="w-full md:max-w-xl">
@@ -102,7 +66,7 @@ function Radio() {
 
 				<ScrollArea className="h-[360px] pr-4">
 					<ul className="space-y-3 pt-4">
-						{room.queue
+						{queue
 							.filter(track => !track.playedAt)
 							.map(track => (
 								<li
@@ -147,7 +111,7 @@ function Radio() {
 					</TypographyLarge>
 
 					<ul className="space-y-3">
-						{room.recommendations?.map(track =>
+						{recommendations?.map(track =>
 							track ? (
 								<li
 									key={track!._id}

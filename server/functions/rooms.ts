@@ -69,7 +69,7 @@ export const get = query({
 			.then(async track => {
 				const spotifyTrackData = (await ctx.db.get(track!.spotifyTrackDataId))!;
 				return {
-					...track,
+					...track!,
 					spotifyTrackData,
 				};
 			});
@@ -92,7 +92,7 @@ export const get = query({
 		return {
 			details: details!,
 			queue,
-			playing: playing!,
+			playing,
 			recommendations,
 		};
 	},

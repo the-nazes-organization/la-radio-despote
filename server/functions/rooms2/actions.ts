@@ -24,7 +24,7 @@ export const getAndUpdateRoomRecommendations = authedAction({
 		// We look for recommendations from playing track and queue
 		const recommendationsBySpotify = await spotifyApi.recommendations.get({
 			seed_tracks: [
-				room.playing.spotifyTrackData.spotifyId,
+				room.playing.spotifyTrackDataId,
 				...room.queue.map(track => track.spotifyTrackData.spotifyId),
 			],
 			limit: 5,
