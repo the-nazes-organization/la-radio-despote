@@ -21,6 +21,7 @@ import { useEffect } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
 import { LikeButton } from './-components/like-button';
+import { NextTrackButton } from './-components/next-track-button';
 
 export const Route = createFileRoute('/app/$radio/')({
 	loader: async ({ params: { radio } }) => {
@@ -85,7 +86,8 @@ function Radio() {
 							{room.playing.spotifyTrackData.artists[0].name}
 						</TypographyMuted>
 					</div>
-					<div className="pl-3">
+					<div className="pl-3 flex flex-col gap-2">
+						<NextTrackButton />
 						<LikeButton />
 					</div>
 				</div>

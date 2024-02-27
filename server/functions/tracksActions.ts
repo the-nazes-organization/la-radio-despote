@@ -1,12 +1,11 @@
 'use node';
 
 import { v } from 'convex/values';
+import { authedAction } from '../lib/authed';
 import { spotifyApi } from '../lib/spotifyApi';
 import { api, internal } from './_generated/api';
 import { Id } from './_generated/dataModel';
-import { action } from './_generated/server';
 import { formatTrack } from './_helpers';
-import { authedAction } from '../lib/authed';
 
 export const requestTrack = authedAction({
 	args: {
@@ -58,7 +57,7 @@ export const requestTrack = authedAction({
 	},
 });
 
-export const playTrack = action({
+export const playTrack = authedAction({
 	args: {
 		roomId: v.id('rooms'),
 	},
