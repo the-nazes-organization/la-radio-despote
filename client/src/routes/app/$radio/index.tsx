@@ -52,7 +52,7 @@ function Radio() {
 			<TypographyH1 className="mb-12">{details.name}</TypographyH1>
 
 			<section>
-				{playing?._id ? <PlayerDisplay playing={playing} /> : null}
+				<PlayerDisplay playing={playing} roomId={params.radio} />
 			</section>
 
 			<section className="w-full md:max-w-xl">
