@@ -1,8 +1,6 @@
-import { useAuthedAction } from '@/lib/useAuthedAction';
 import type { Track } from '@spotify/web-api-ts-sdk';
 import { Music } from 'lucide-react';
 import { useState } from 'react';
-import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
 import { AddTrackButton } from './add-track-button';
 import { RequestTrackForm } from './request-track-form';
@@ -23,7 +21,6 @@ interface AddTrackModalProps {
 }
 
 export const AddTrackModal = ({ roomId, classname }: AddTrackModalProps) => {
-	const authedRequestTrack = useAuthedAction(api.tracksActions.requestTrack);
 	const [results, setResults] = useState<Track[]>([]);
 
 	return (
