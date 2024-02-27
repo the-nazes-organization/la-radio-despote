@@ -16,7 +16,7 @@ export const PlayerDisplay = ({ playing }: PlayerDisplayProps) => {
 	const player = useSpotifyPlayerStore();
 
 	useEffect(() => {
-		if (player.deviceId === null) {
+		if (!player.deviceId || !playing.spotifyTrackData.spotifyId) {
 			return;
 		}
 		const positionMs = differenceInMilliseconds(
