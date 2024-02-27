@@ -96,7 +96,7 @@ function Radio() {
 
 			<section className="w-full md:max-w-xl">
 				<TypographyH3 className="mb-3 flex justify-between">
-					<span>Liste d'attente</span>
+					<span>Playing Next</span>
 
 					<AddTrackModal roomId={params.radio} />
 				</TypographyH3>
