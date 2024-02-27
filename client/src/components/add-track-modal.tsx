@@ -1,9 +1,9 @@
 import { useAuthedAction } from '@/lib/useAuthedAction';
 import type { Track } from '@spotify/web-api-ts-sdk';
-import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
+import { AddTrackButton } from './add-track-button';
 import { RequestTrackForm } from './request-track-form';
 import { TypographyMuted } from './typography';
 import { Button } from './ui/button';
@@ -42,7 +42,7 @@ export const AddTrackModal = ({ roomId, classname }: AddTrackModalProps) => {
 					<ul className="space-y-2">
 						{results.map(track => (
 							<li key={track.id} className=" flex items-center">
-								<div className="grid grid-cols-[40px_1fr] gap-4">
+								<div className="grid grid-cols-[40px_1fr] gap-4 grow">
 									<img
 										src={track.album.images[2].url}
 										className="rounded-md place-self-center="
@@ -55,18 +55,7 @@ export const AddTrackModal = ({ roomId, classname }: AddTrackModalProps) => {
 										</TypographyMuted>
 									</div>
 								</div>
-								<Button
-									className="ml-auto rounded-full"
-									size={'icon'}
-									onClick={async () => {
-										authedRequestTrack({
-											spotifyTrackId: track.id,
-											roomId: roomId,
-										});
-									}}
-								>
-									<Plus />
-								</Button>
+								<AddTrackButton roomId={roomId} spotifyTrackId={track.id} />
 							</li>
 						))}
 					</ul>

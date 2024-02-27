@@ -9,13 +9,14 @@ import { preloadQuery } from '@/lib/preload-query';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useMutation, usePreloadedQuery } from 'convex/react';
 
+import { AddTrackButton } from '@/components/add-track-button';
 import { AddTrackModal } from '@/components/add-track-modal';
 import { TimeSlider } from '@/components/time-slider';
 import { CommandMenu } from '@/components/ui/command-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
 import { useAuthedAction } from '@/lib/useAuthedAction';
-import { Plus, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useEffect } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
@@ -40,7 +41,7 @@ export const Route = createFileRoute('/app/$radio/')({
 });
 
 function Radio() {
-	const params = Route.useParams();
+	const params = Route.useParams<{ radio: Id<'rooms'> }>();
 
 	const room = usePreloadedQuery(Route.useLoaderData());
 
@@ -95,7 +96,7 @@ function Radio() {
 				<TypographyH3 className="mb-3 flex justify-between">
 					<span>Liste d'attente</span>
 
-					<AddTrackModal roomId={params.radio as Id<'rooms'>} />
+					<AddTrackModal roomId={params.radio} />
 				</TypographyH3>
 
 				<hr />
@@ -147,39 +148,33 @@ function Radio() {
 					</TypographyLarge>
 
 					<ul className="space-y-3">
-						{room.recommendations?.map(track => (
-							<li
-								key={track!._id}
-								className=" flex items-center group transition ease-in-out duration-500"
-							>
-								<div className="grid grid-cols-[40px_1fr] gap-4">
-									<img
-										src={track!.album.images[2]?.url} // TODO: Sometimes the images are not available
-										className="rounded-md"
-									/>
-									<div>
-										<div className="text-sm">{track!.name}</div>
-										<TypographyMuted className="text-xs">
-											{track!.artists[0].name}
-										</TypographyMuted>
-									</div>
-								</div>
-								<Button
-									className="ml-auto hidden group-hover:flex rounded-full"
-									size={'icon'}
-									variant={'outline'}
+						{room.recommendations?.map(track =>
+							track ? (
+								<li
+									key={track!._id}
+									className=" flex items-center group transition ease-in-out duration-500"
 								>
-									<Plus
-										onClick={async () => {
-											requestTrack({
-												spotifyTrackId: track!.spotifyId,
-												roomId: room.details._id,
-											});
-										}}
-									/>
-								</Button>
-							</li>
-						))}
+									<div className="grid grid-cols-[40px_1fr] gap-4">
+										<img
+											src={track!.album.images[2]?.url} // TODO: Sometimes the images are not available
+											className="rounded-md"
+										/>
+										<div>
+											<div className="text-sm">{track!.name}</div>
+											<TypographyMuted className="text-xs">
+												{track!.artists[0].name}
+											</TypographyMuted>
+										</div>
+									</div>
+									<div className="ml-auto hidden group-hover:flex rounded-full">
+										<AddTrackButton
+											spotifyTrackId={track.spotifyId}
+											roomId={params.radio}
+										/>
+									</div>
+								</li>
+							) : null,
+						)}
 					</ul>
 				</ScrollArea>
 			</section>
