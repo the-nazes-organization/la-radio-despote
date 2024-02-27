@@ -28,9 +28,9 @@ function LayoutComponent() {
 	const params = Route.useParams();
 	const room = usePreloadedQuery(Route.useLoaderData());
 
-	const addUserToRoom = useAuthedMutation(api.rooms2.mutations.addUserToRoom);
+	const addUserToRoom = useAuthedMutation(api.users.mutations.addUserToRoom);
 	const removeUserFromRoom = useAuthedMutation(
-		api.rooms2.mutations.removeUserFromRoom,
+		api.users.mutations.removeUserFromRoom,
 	);
 	useEffect(() => {
 		addUserToRoom({
