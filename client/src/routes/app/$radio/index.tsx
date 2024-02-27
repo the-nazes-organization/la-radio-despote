@@ -101,7 +101,7 @@ function Radio() {
 
 				<hr />
 
-				<ScrollArea className="h-[360px]">
+				<ScrollArea className="h-[360px] pr-4">
 					<ul className="space-y-3 pt-4">
 						{room.queue
 							.filter(track => !track.playedAt)
@@ -127,7 +127,7 @@ function Radio() {
 										</div>
 									</div>
 									<Button
-										className="ml-auto hidden group-hover:flex"
+										className="ml-auto hidden group-hover:flex rounded-full size-6 text-red-600 hover:bg-red-500 hover:text-white"
 										size={'icon'}
 										variant={'outline'}
 									>
