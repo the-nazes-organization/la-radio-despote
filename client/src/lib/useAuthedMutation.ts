@@ -4,6 +4,7 @@ import {
 	FunctionReference,
 	OptionalRestArgs,
 } from 'convex/server';
+import { useCallback } from 'react';
 import { useSpotifyPlayerStore } from './providers/SpotifyPlayerProvider';
 
 export const useAuthedMutation = <TArgs extends DefaultFunctionArgs>(
@@ -12,25 +13,28 @@ export const useAuthedMutation = <TArgs extends DefaultFunctionArgs>(
 	const { sdk } = useSpotifyPlayerStore();
 	const actionFunction = useMutation(actionReference);
 
-	return async (
-		arg: Omit<
-			OptionalRestArgs<FunctionReference<'mutation', 'public', TArgs>>[0],
-			'token'
-		>,
-	) => {
-		const token = await sdk.getAccessToken().then(auth => {
-			if (!auth) {
-				throw new Error('Not authenticated');
-			}
-			return auth.access_token;
-		});
+	return useCallback(
+		async (
+			arg: Omit<
+				OptionalRestArgs<FunctionReference<'mutation', 'public', TArgs>>[0],
+				'token'
+			>,
+		) => {
+			const token = await sdk.getAccessToken().then(auth => {
+				if (!auth) {
+					throw new Error('Not authenticated');
+				}
+				return auth.access_token;
+			});
 
-		const argsWithToken = { ...arg, token };
+			const argsWithToken = { ...arg, token };
 
-		actionFunction(
-			...([argsWithToken] as unknown as OptionalRestArgs<
-				FunctionReference<'mutation', 'public', TArgs>
-			>),
-		);
-	};
+			actionFunction(
+				...([argsWithToken] as unknown as OptionalRestArgs<
+					FunctionReference<'mutation', 'public', TArgs>
+				>),
+			);
+		},
+		[actionFunction, sdk],
+	);
 };
