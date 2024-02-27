@@ -9,7 +9,7 @@ import { preloadQuery } from '@/lib/preload-query';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useMutation, usePreloadedQuery } from 'convex/react';
 
-import { AddTrackButton } from '@/components/add-track-button';
+import { AddTrackModal } from '@/components/add-track-button';
 import { TimeSlider } from '@/components/time-slider';
 import { CommandMenu } from '@/components/ui/command-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -95,7 +95,7 @@ function Radio() {
 				<TypographyH3 className="mb-3 flex justify-between">
 					<span>Liste d'attente</span>
 
-					<AddTrackButton roomId={params.radio as Id<'rooms'>} />
+					<AddTrackModal roomId={params.radio as Id<'rooms'>} />
 				</TypographyH3>
 
 				<hr />

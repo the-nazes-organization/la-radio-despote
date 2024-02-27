@@ -1,10 +1,10 @@
-import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
+import { useAuthedAction } from '@/lib/useAuthedAction';
 import type { Track } from '@spotify/web-api-ts-sdk';
-import { useAction } from 'convex/react';
-import { Plus, Search } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
+import { RequestTrackForm } from './request-track-form';
 import { TypographyMuted } from './typography';
 import { Button } from './ui/button';
 import {
@@ -15,31 +15,15 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from './ui/dialog';
-import { Input } from './ui/input';
-import { useAuthedAction } from '@/lib/useAuthedAction';
 
-interface AddTrackButtonProps {
+interface AddTrackModalProps {
 	roomId: Id<'rooms'>;
 	classname?: string;
 }
 
-export const AddTrackButton = ({ roomId, classname }: AddTrackButtonProps) => {
-	const player = useSpotifyPlayerStore();
+export const AddTrackModal = ({ roomId, classname }: AddTrackModalProps) => {
 	const authedRequestTrack = useAuthedAction(api.tracksActions.requestTrack);
-
-	const [query, setQuery] = useState('');
 	const [results, setResults] = useState<Track[]>([]);
-
-	const handleSearch = async () => {
-		const elementsFound = await player.sdk.search(
-			query,
-			['track'],
-			undefined,
-			10,
-		);
-
-		setResults(elementsFound.tracks.items);
-	};
 
 	return (
 		<Dialog>
@@ -53,21 +37,7 @@ export const AddTrackButton = ({ roomId, classname }: AddTrackButtonProps) => {
 						Enter the name of the track you want to add to the queue.
 					</DialogDescription>
 				</DialogHeader>
-				<div className="grid gap-4 py-4">
-					<div className="grid grid-cols-4 items-center gap-4">
-						<Input
-							id="name"
-							defaultValue="Pedro Duarte"
-							className="col-span-3"
-							placeholder="Search for a track"
-							value={query ?? ''}
-							onChange={e => setQuery(e.target.value)}
-						/>
-						<Button type="submit" size={'icon'} onClick={handleSearch}>
-							<Search />
-						</Button>
-					</div>
-				</div>
+				<RequestTrackForm setResults={setResults} />
 				<div className=" overflow-auto max-h-80">
 					<ul className="space-y-2">
 						{results.map(track => (
@@ -92,7 +62,7 @@ export const AddTrackButton = ({ roomId, classname }: AddTrackButtonProps) => {
 										authedRequestTrack({
 											spotifyTrackId: track.id,
 											roomId: roomId,
-										}).then(d => console.log('✅', d));
+										});
 									}}
 								>
 									<Plus />
