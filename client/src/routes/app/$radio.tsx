@@ -25,7 +25,7 @@ export const Route = createFileRoute('/app/$radio')({
 });
 
 function LayoutComponent() {
-	const params = Route.useParams();
+	const params = Route.useParams<{ radio: Id<'rooms'> }>();
 	const room = usePreloadedQuery(Route.useLoaderData());
 
 	const addUserToRoom = useAuthedMutation(api.users.mutations.addUserToRoom);
@@ -34,11 +34,11 @@ function LayoutComponent() {
 	);
 	useEffect(() => {
 		addUserToRoom({
-			roomId: params.radio as Id<'rooms'>,
+			roomId: params.radio,
 		});
 		return () => {
 			removeUserFromRoom({
-				roomId: params.radio as Id<'rooms'>,
+				roomId: params.radio,
 			});
 		};
 	}, []);
