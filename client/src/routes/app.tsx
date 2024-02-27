@@ -7,7 +7,7 @@ import { usePreloadedQuery } from 'convex/react';
 import { api } from 'server';
 
 export const Route = createFileRoute('/app')({
-	async beforeLoad(opts) {
+	async beforeLoad() {
 		const store = useSpotifyPlayerStore.getState();
 		const isAuthed = await store.sdk.getAccessToken();
 

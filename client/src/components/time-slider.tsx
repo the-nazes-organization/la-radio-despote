@@ -2,9 +2,7 @@ import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
 import { useEffect, useState } from 'react';
 import { Slider } from './ui/slider';
 
-interface TimeSliderProps {}
-
-export const TimeSlider = ({}: TimeSliderProps) => {
+export const TimeSlider = () => {
 	const player = useSpotifyPlayerStore();
 
 	const [position, setPosition] = useState<number>(0);
@@ -21,7 +19,7 @@ export const TimeSlider = ({}: TimeSliderProps) => {
 		return () => {
 			clearInterval(playingInterval);
 		};
-	}, []);
+	}, [player.player]);
 
 	return (
 		<div className="w-full">

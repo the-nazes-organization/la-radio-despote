@@ -5,9 +5,7 @@ import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
 import { Route } from '../../$radio';
 
-interface NextTrackButtonProps {}
-
-export const NextTrackButton = ({}: NextTrackButtonProps) => {
+export const NextTrackButton = () => {
 	const { radio } = Route.useParams<{ radio: Id<'rooms'> }>();
 	const playNextTrack = useAuthedAction(api.tracksActions.playTrack);
 

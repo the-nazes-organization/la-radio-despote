@@ -4,9 +4,7 @@ import { cn } from '@/lib/utils';
 import { Heart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-interface LikeButtonProps {}
-
-export const LikeButton = ({}: LikeButtonProps) => {
+export const LikeButton = () => {
 	const player = useSpotifyPlayerStore();
 	const [isLiked, setIsLiked] = useState(false);
 
@@ -23,7 +21,11 @@ export const LikeButton = ({}: LikeButtonProps) => {
 			}
 		};
 		fetchLiked();
-	}, [player.state?.track_window.current_track]);
+	}, [
+		currentTrack,
+		player.sdk.currentUser.tracks,
+		player.state?.track_window.current_track,
+	]);
 
 	const handleLike = async () => {
 		if (currentTrack?.id) {

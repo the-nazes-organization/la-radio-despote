@@ -41,7 +41,7 @@ function LayoutComponent() {
 				roomId: params.radio,
 			});
 		};
-	}, []);
+	}, [addUserToRoom, params.radio, removeUserFromRoom]);
 
 	return (
 		<>

@@ -24,7 +24,13 @@ export const PlayerDisplay = ({ playing }: PlayerDisplayProps) => {
 		return () => {
 			player.player!.pause();
 		};
-	}, [player.deviceId, playing.spotifyTrackDataId]);
+	}, [
+		player.actions,
+		player.deviceId,
+		player.player,
+		playing.playedAt,
+		playing.spotifyTrackData.spotifyId,
+	]);
 
 	return (
 		<>

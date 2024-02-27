@@ -37,7 +37,7 @@ export const RequestTrackForm = ({ setResults }: RequestTrackFormProps) => {
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const elementsFound = await player.sdk.search(
-			form.getValues('trackQuery'),
+			values.trackQuery,
 			['track'],
 			undefined,
 			10,
