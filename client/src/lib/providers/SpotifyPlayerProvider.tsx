@@ -1,5 +1,4 @@
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
-import { differenceInMilliseconds } from 'date-fns';
 import { create } from 'zustand';
 
 interface SpotifyPlayerState {
@@ -10,7 +9,7 @@ interface SpotifyPlayerState {
 	isPlayerDisabled: boolean;
 	actions: {
 		setPlayerDisabled: (isPlayerDisabled: boolean) => void;
-		play: (args: { spotifyId: string; playedAt: number }) => void;
+		play: (args: { spotifyId: string; positionMs: number }) => void;
 	};
 }
 
@@ -94,20 +93,25 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 					: localStorage.removeItem('spotify:player:disabled');
 			},
 
-			async play({ spotifyId, playedAt }) {
-				if (get().isPlayerDisabled) {
+			async play({ spotifyId, positionMs }) {
+				const deviceId = get().deviceId;
+				if (get().isPlayerDisabled || !deviceId || !spotifyId || !sdk.player) {
 					return;
 				}
 
-				const diff = differenceInMilliseconds(new Date(), new Date(playedAt));
-
 				await sdk.player.startResumePlayback(
-					get().deviceId!,
+					deviceId,
 					undefined,
 					[`spotify:track:${spotifyId}`],
 					undefined,
-					diff,
+					positionMs,
 				);
+				const availableDevices = await sdk.player.getAvailableDevices();
+				if (availableDevices.devices.length > 0) {
+					setTimeout(async () => {
+						await sdk.player.seekToPosition(positionMs);
+					}, 300);
+				}
 			},
 			pause() {
 				return get().player?.pause();

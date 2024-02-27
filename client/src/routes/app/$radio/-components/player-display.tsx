@@ -1,35 +1,58 @@
 import { TimeSlider } from '@/components/time-slider';
 import { TypographyH3, TypographyMuted } from '@/components/typography';
 import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
+import { useAuthedAction } from '@/lib/useAuthedAction';
+import { differenceInMilliseconds } from 'date-fns';
 import { useEffect } from 'react';
-import { Doc } from 'server/functions/_generated/dataModel';
+import { api } from 'server';
+import { Doc, Id } from 'server/functions/_generated/dataModel';
 import { LikeButton } from './like-button';
 import { NextTrackButton } from './next-track-button';
 
 interface PlayerDisplayProps {
 	playing: { spotifyTrackData: Doc<'spotifyTrackData'> } & Doc<'tracks'>;
+	roomId: Id<'rooms'>;
 }
 
-export const PlayerDisplay = ({ playing }: PlayerDisplayProps) => {
+export const PlayerDisplay = ({ playing, roomId }: PlayerDisplayProps) => {
 	const player = useSpotifyPlayerStore();
+	const playTrack = useAuthedAction(api.tracksActions.playTrack);
 
 	useEffect(() => {
-		if (player.deviceId) {
-			player.actions.play({
-				spotifyId: playing.spotifyTrackData.spotifyId,
-				playedAt: playing.playedAt!,
-			});
+		if (player.deviceId === null) {
+			return;
 		}
+		const positionMs = differenceInMilliseconds(
+			new Date(),
+			new Date(playing.playedAt!),
+		);
+		if (positionMs > playing.spotifyTrackData.duration) {
+			const playNextTrack = async () => {
+				await playTrack({
+					roomId,
+				});
+			};
+			playNextTrack();
+			return;
+		}
+
+		player.actions.play({
+			spotifyId: playing.spotifyTrackData.spotifyId,
+			positionMs,
+		});
 
 		return () => {
 			player.player!.pause();
 		};
 	}, [
+		playTrack,
 		player.actions,
 		player.deviceId,
 		player.player,
 		playing.playedAt,
+		playing.spotifyTrackData.duration,
 		playing.spotifyTrackData.spotifyId,
+		roomId,
 	]);
 
 	return (
