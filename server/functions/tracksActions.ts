@@ -15,7 +15,6 @@ export const requestTrack = authedAction({
 	},
 
 	handler: async (ctx, args) => {
-		// console.log(`I AM ✅`, ctx.me.display_name);
 		const track = await spotifyApi.tracks.get(args.spotifyTrackId);
 
 		const [spotifyTrackDataId] = await ctx.runMutation(
@@ -34,23 +33,13 @@ export const requestTrack = authedAction({
 			},
 		);
 
-		// const room = await ctx.runQuery(api.rooms.get, { roomId: args.roomId });
-		// if (room.recommendations.includes(trackId)) {
-		// }
-
-		// if (test?.recommendations?.includes(trackId)) {
-		// 	// const recommendations = room.recommendations.filter(
-		// 	// 	recommendation => recommendation !== trackId,
-		// 	// );
-		// 	await ctx.runMutation(api.rooms.updateRoom, {
-		// 		roomId: args.roomId,
-		// 		// recommendations,
-		// 	});
-		// }
-
 		await ctx.runMutation(api.rooms.removeTrackFromRecommendations, {
 			roomId: args.roomId,
 			spotifyTrackDataId,
+		});
+
+		await ctx.runAction(api.rooms2.actions.getAndUpdateRoomRecommendations, {
+			roomId: args.roomId,
 		});
 
 		return trackId;
@@ -91,29 +80,15 @@ export const playTrack = authedAction({
 			playedAt: now,
 		});
 
-		// We schedule the next track to be played
-		await ctx.scheduler.runAfter(
-			nextTrackInQueue.spotifyTrackData.duration,
-			api.tracksActions.playTrack,
-			{ roomId: args.roomId },
-		);
+		// // We schedule the next track to be played
+		// await ctx.scheduler.runAfter(
+		// 	nextTrackInQueue.spotifyTrackData.duration,
+		// 	api.tracksActions.playTrack,
+		// 	{ roomId: args.roomId },
+		// );
 
-		// We look for recommendations
-		const recommendationsBySpotify = await spotifyApi.recommendations.get({
-			seed_tracks: [nextTrackInQueue.spotifyTrackData.spotifyId],
-			limit: 5,
-		});
-
-		// We save the recommendations
-		const recommendedTrackIds = await ctx.runMutation(
-			internal.tracks.saveSpotifyTrackData,
-			{ tracksToSave: recommendationsBySpotify.tracks.map(formatTrack) },
-		);
-
-		// We update the room with the recommendations
-		await ctx.runMutation(api.rooms.updateRoomRecommendations, {
+		await ctx.runAction(api.rooms2.actions.getAndUpdateRoomRecommendations, {
 			roomId: args.roomId,
-			recommendations: recommendedTrackIds,
 		});
 	},
 });
