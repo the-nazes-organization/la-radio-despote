@@ -4,7 +4,7 @@ import { v } from 'convex/values';
 import { authedAction } from '../lib/authed';
 import { spotifyApi } from '../lib/spotifyApi';
 import { api, internal } from './_generated/api';
-import { Id } from './_generated/dataModel';
+import { Doc, Id } from './_generated/dataModel';
 import { formatTrack } from './_helpers';
 
 export const requestTrack = authedAction({
@@ -52,6 +52,21 @@ export const playTrack = authedAction({
 	},
 	handler: async (ctx, args) => {
 		// We get current playing track
+		const currentPlayingTrack = (await ctx.runQuery(
+			api.rooms2.queries.getCurrentTracks,
+			{
+				roomId: args.roomId,
+			},
+		)) as Doc<'tracks'>;
+
+		// We cancel the current playing track
+		if (currentPlayingTrack?.scheduledFunctionId) {
+			await ctx.runMutation(api.messages.mutations.cancelMessage, {
+				id: currentPlayingTrack.scheduledFunctionId,
+			});
+		}
+
+		// We get the next track in queue
 		let nextTrackInQueue = await ctx.runQuery(api.tracks.getNextTrackInQueue, {
 			roomId: args.roomId,
 		});
@@ -80,12 +95,21 @@ export const playTrack = authedAction({
 			playedAt: now,
 		});
 
-		// // We schedule the next track to be played
-		// await ctx.scheduler.runAfter(
-		// 	nextTrackInQueue.spotifyTrackData.duration,
-		// 	api.tracksActions.playTrack,
-		// 	{ roomId: args.roomId },
-		// );
+		// We schedule the next track to be played
+		const scheduledFunctionId = (await ctx.scheduler.runAfter(
+			nextTrackInQueue.spotifyTrackData.duration,
+			api.tracksActions.playTrack,
+			{ roomId: args.roomId },
+		)) as unknown as { jobId: Id<'_scheduled_functions'> };
+
+		// We update the track to set the scheduledFunctionId field
+		await ctx.runMutation(
+			internal.tracksFolder.mutations.updateTrackScheduledFunctionId,
+			{
+				trackId: nextTrackInQueue._id,
+				scheduledFunctionId: scheduledFunctionId,
+			},
+		);
 
 		await ctx.runAction(api.rooms2.actions.getAndUpdateRoomRecommendations, {
 			roomId: args.roomId,
