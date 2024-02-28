@@ -54,8 +54,11 @@ export const playTrack = authedAction({
 			},
 		);
 
-		await ctx.runAction(api.rooms2.actions.getAndUpdateRoomRecommendations, {
-			roomId: args.roomId,
-		});
+		await ctx.runAction(
+			api.roomsFolder.actions.getAndUpdateRoomRecommendations,
+			{
+				roomId: args.roomId,
+			},
+		);
 	},
 });

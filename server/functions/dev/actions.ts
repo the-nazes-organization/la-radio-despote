@@ -56,7 +56,7 @@ export const playTrack = internalAction({
 	handler: async (ctx, args) => {
 		// We get current playing track
 		const currentPlayingTrack = (await ctx.runQuery(
-			api.rooms2.queries.getPlayingTrack,
+			api.roomsFolder.queries.getPlayingTrack,
 			{
 				roomId: args.roomId,
 			},
@@ -69,7 +69,7 @@ export const playTrack = internalAction({
 			});
 		}
 
-		const room = await ctx.runQuery(api.rooms2.queries.getRoom, {
+		const room = await ctx.runQuery(api.roomsFolder.queries.getRoom, {
 			roomId: args.roomId,
 		});
 		if (!room.listeners.length) {
