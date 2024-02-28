@@ -21,7 +21,7 @@ export const PlayerDisplay = ({ playing }: PlayerDisplayProps) => {
 		}
 		const positionMs = differenceInMilliseconds(
 			new Date(),
-			new Date(playing.playedAt!),
+			new Date(playing.playedAt ?? Date.now()),
 		);
 
 		player.actions.play({
