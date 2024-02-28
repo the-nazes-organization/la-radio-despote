@@ -11,10 +11,6 @@ export const playTrack = action({
 		roomId: v.id('rooms'),
 	},
 	handler: async (ctx, args) => {
-		console.log('✅✅', ctx);
-		// @ts-expect-error
-		console.log('✅✅', ctx.me);
-
 		// We get the next track in queue
 		let nextTrackInQueue = await ctx.runQuery(api.tracks.getNextTrackInQueue, {
 			roomId: args.roomId,
