@@ -14,7 +14,9 @@ export const AddTrackButton = ({
 	roomId,
 	spotifyTrackId,
 }: AddTrackButtonProps) => {
-	const authedRequestTrack = useAuthedAction(api.tracksActions.requestTrack);
+	const authedRequestTrack = useAuthedAction(
+		api.tracksFolder.actions.requestTrack,
+	);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleClick = async () => {

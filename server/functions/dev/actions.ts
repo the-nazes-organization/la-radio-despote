@@ -80,10 +80,9 @@ export const playTrack = internalAction({
 				{ roomId: args.roomId },
 			);
 
-			await ctx.runAction(api.tracksActions.requestTrack, {
+			await ctx.runAction(api.tracksFolder.actions.requestTrack, {
 				roomId: args.roomId,
 				spotifyTrackId: recommendation.spotifyId,
-				token: '',
 			});
 
 			nextTrackInQueue = (await ctx.runQuery(api.tracks.getNextTrackInQueue, {
