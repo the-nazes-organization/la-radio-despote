@@ -1,12 +1,11 @@
 'use node';
 
 import { v } from 'convex/values';
-import { authedAction } from '../lib/authed';
 import { api, internal } from './_generated/api';
 import { Id } from './_generated/dataModel';
-import { action } from './_generated/server';
+import { internalAction } from './_generated/server';
 
-export const playTrack = action({
+export const playTrack = internalAction({
 	args: {
 		roomId: v.id('rooms'),
 	},
@@ -42,7 +41,7 @@ export const playTrack = action({
 		// We schedule the next track to be played
 		const scheduledFunctionId = (await ctx.scheduler.runAfter(
 			nextTrackInQueue.spotifyTrackData.duration,
-			api.tracksActions.playTrack,
+			internal.tracksActions.playTrack,
 			{ roomId: args.roomId },
 		)) as unknown as { jobId: Id<'_scheduled_functions'> };
 

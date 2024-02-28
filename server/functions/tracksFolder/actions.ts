@@ -27,7 +27,7 @@ export const skipTrack = authedAction({
 			});
 		}
 
-		await ctx.runAction(api.tracksActions.playTrack, {
+		await ctx.runAction(internal.tracksActions.playTrack, {
 			roomId: args.roomId,
 		});
 	},
