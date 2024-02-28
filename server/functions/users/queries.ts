@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { internalQuery, query } from '../_generated/server';
+import { internalQuery } from '../_generated/server';
 
 export const getUserSession = internalQuery({
 	args: {
@@ -9,7 +9,8 @@ export const getUserSession = internalQuery({
 		const session = await ctx.db
 			.query('sessions')
 			.withIndex('by_token', q => q.eq('token', args.token))
-			.unique();
+			.first();
+		// .unique();
 
 		if (!session) {
 			return null;
