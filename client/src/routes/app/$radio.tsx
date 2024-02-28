@@ -1,3 +1,4 @@
+import { ReactionsDisplay } from '@/components/reactions-display';
 import { preloadQuery } from '@/lib/preload-query';
 import { useAuthedMutation } from '@/lib/useAuthedMutation';
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router';
@@ -48,6 +49,7 @@ function LayoutComponent() {
 			<div className="absolute top-6 left-6">
 				<ListenersList listeners={room.details.listeners} />
 			</div>
+			<ReactionsDisplay roomId={params.radio} />
 			<Outlet />
 		</>
 	);

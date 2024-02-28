@@ -1,17 +1,22 @@
 import { Button } from '@/components/ui/button';
 import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
+import { useAuthedMutation } from '@/lib/useAuthedMutation';
 import { cn } from '@/lib/utils';
-import confetti from 'canvas-confetti';
 import { Heart } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { api } from 'server';
+import { Id } from 'server/functions/_generated/dataModel';
 
-const heart = confetti.shapeFromPath({
-	path: 'M167 72c19,-38 37,-56 75,-56 42,0 76,33 76,75 0,76 -76,151 -151,227 -76,-76 -151,-151 -151,-227 0,-42 33,-75 75,-75 38,0 57,18 76,56z',
-});
+interface LikeButtonProps {
+	roomId: Id<'rooms'>;
+}
 
-export const LikeButton = () => {
+export const LikeButton = ({ roomId }: LikeButtonProps) => {
 	const player = useSpotifyPlayerStore();
 	const [isLiked, setIsLiked] = useState(false);
+	const addLikeReaction = useAuthedMutation(
+		api.reactions.mutations.addLikeReaction,
+	);
 
 	const currentTrack = player.state?.track_window.current_track;
 
@@ -36,14 +41,7 @@ export const LikeButton = () => {
 		if (currentTrack?.id) {
 			if (!isLiked) {
 				await player.sdk.currentUser.tracks.saveTracks([currentTrack.id]);
-
-				confetti({
-					particleCount: 100,
-					spread: 70,
-					origin: { y: 1 },
-					shapes: [heart],
-					colors: ['#f93963', '#a10864', '#ee0b93'],
-				});
+				addLikeReaction({ roomId });
 			} else {
 				await player.sdk.currentUser.tracks.removeSavedTracks([
 					currentTrack.id,

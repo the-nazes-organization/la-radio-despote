@@ -70,6 +70,12 @@ export default defineSchema(
 			loggedInAt: v.number(),
 			spotifyUserProfile: spotifyUserProfileSchema,
 		}).index('by_spotify_user_id', ['spotifyUserProfile.id']),
+
+		reactions: defineTable({
+			roomId: v.id('rooms'),
+			userId: v.id('users'),
+			type: v.union(v.literal('like'), v.literal('dislike')),
+		}).index('by_room', ['roomId']),
 	},
 
 	{ schemaValidation: false },

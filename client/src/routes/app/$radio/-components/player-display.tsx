@@ -12,7 +12,7 @@ interface PlayerDisplayProps {
 	roomId: Id<'rooms'>;
 }
 
-export const PlayerDisplay = ({ playing }: PlayerDisplayProps) => {
+export const PlayerDisplay = ({ playing, roomId }: PlayerDisplayProps) => {
 	const player = useSpotifyPlayerStore();
 
 	useEffect(() => {
@@ -58,7 +58,7 @@ export const PlayerDisplay = ({ playing }: PlayerDisplayProps) => {
 				</div>
 				<div className="pl-3 flex flex-col gap-2">
 					<NextTrackButton />
-					<LikeButton />
+					<LikeButton roomId={roomId} />
 				</div>
 			</div>
 			<TimeSlider />
