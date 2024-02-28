@@ -38,10 +38,7 @@ export const getAndUpdateRoomRecommendations = action({
 			{ tracksToSave: recommendationsBySpotify.tracks.map(formatTrack) },
 		);
 
-		const recommendations = new Set([
-			...room.recommendations.filter(r => r).map(r => r!._id),
-			...recommendedTrackIds,
-		]);
+		const recommendations = new Set([...recommendedTrackIds]);
 
 		// We update the room with the recommendations
 		await ctx.runMutation(api.rooms.updateRoomRecommendations, {
