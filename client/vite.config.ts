@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
 import { TanStackRouterVite } from '@tanstack/router-vite-plugin';
 import path from 'path';
+import { defineConfig } from 'vite';
 import checker from 'vite-plugin-checker';
 
 export default defineConfig({
@@ -17,5 +17,8 @@ export default defineConfig({
 		alias: {
 			'@': path.resolve(__dirname, './src'),
 		},
+	},
+	optimizeDeps: {
+		exclude: ['canvas-confetti'],
 	},
 });
