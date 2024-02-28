@@ -110,7 +110,7 @@ export const playTrack = internalAction({
 			internal.tracksFolder.mutations.updateTrackScheduledFunctionId,
 			{
 				trackId: nextTrackInQueue._id,
-				scheduledFunctionId: scheduledFunctionId,
+				scheduledFunctionId: scheduledFunctionId.jobId,
 			},
 		);
 

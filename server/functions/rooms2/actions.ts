@@ -1,12 +1,12 @@
 'use node';
 
 import { v } from 'convex/values';
-import { authedAction } from '../../lib/authed';
 import { spotifyApi } from '../../lib/spotifyApi';
 import { api, internal } from '../_generated/api';
+import { action } from '../_generated/server';
 import { formatTrack } from '../_helpers';
 
-export const getAndUpdateRoomRecommendations = authedAction({
+export const getAndUpdateRoomRecommendations = action({
 	args: {
 		roomId: v.id('rooms'),
 	},
@@ -25,7 +25,9 @@ export const getAndUpdateRoomRecommendations = authedAction({
 		const recommendationsBySpotify = await spotifyApi.recommendations.get({
 			seed_tracks: [
 				room.playing.spotifyTrackData.spotifyId,
-				...room.queue.map(track => track.spotifyTrackData.spotifyId),
+				...room.queue
+					.map(track => track.spotifyTrackData.spotifyId)
+					.splice(0, 4),
 			],
 			limit: 5,
 		});

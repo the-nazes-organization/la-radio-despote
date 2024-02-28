@@ -7,10 +7,10 @@ import { Route } from '../../$radio';
 
 export const NextTrackButton = () => {
 	const { radio } = Route.useParams<{ radio: Id<'rooms'> }>();
-	const playNextTrack = useAuthedAction(api.tracksActions.playTrack);
+	const skipTrack = useAuthedAction(api.tracksFolder.actions.skipTrack);
 
 	const handleClick = async () => {
-		await playNextTrack({ roomId: radio });
+		await skipTrack({ roomId: radio });
 	};
 
 	return (
