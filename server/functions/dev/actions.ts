@@ -69,6 +69,13 @@ export const playTrack = internalAction({
 			});
 		}
 
+		const room = await ctx.runQuery(api.rooms2.queries.getRoom, {
+			roomId: args.roomId,
+		});
+		if (!room.listeners.length) {
+			return;
+		}
+
 		// We get the next track in queue
 		let nextTrackInQueue = await ctx.runQuery(api.tracks.getNextTrackInQueue, {
 			roomId: args.roomId,
