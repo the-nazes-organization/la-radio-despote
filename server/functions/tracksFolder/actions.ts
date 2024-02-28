@@ -14,7 +14,7 @@ export const skipTrack = authedAction({
 	handler: async (ctx, args) => {
 		// We get current playing track
 		const currentPlayingTrack = (await ctx.runQuery(
-			api.rooms2.queries.getCurrentTracks,
+			api.rooms2.queries.getPlayingTrack,
 			{
 				roomId: args.roomId,
 			},

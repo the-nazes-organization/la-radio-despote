@@ -1,7 +1,7 @@
 import { v } from 'convex/values';
 import { query } from '../_generated/server';
 
-export const getCurrentTracks = query({
+export const getPlayingTrack = query({
 	args: {
 		roomId: v.id('rooms'),
 	},
@@ -9,7 +9,7 @@ export const getCurrentTracks = query({
 		const room = await ctx.db.get(args.roomId);
 
 		if (!room) {
-			throw new Error('[ROOM - getCurrentTracks]: Room not found');
+			throw new Error('[ROOM - getPlayingTrack]: Room not found');
 		}
 
 		const currentPlayingTrack = await ctx.db
