@@ -5,8 +5,9 @@ import {
 } from 'convex-helpers/server/customFunctions.js';
 import { v } from 'convex/values';
 import { internal } from '../functions/_generated/api';
-import { Doc } from '../functions/_generated/dataModel';
+import { DataModel, Doc } from '../functions/_generated/dataModel';
 import { action, mutation, query } from '../functions/_generated/server';
+import { GenericActionCtx } from 'convex/server';
 
 export const authedQuery = customQuery(query, {
 	args: { token: v.optional(v.string()) },
@@ -60,17 +61,17 @@ export const authedMutation = customMutation(mutation, {
  */
 export const authedAction = customAction(action, {
 	args: { token: v.optional(v.string()) },
-	input: async (ctx, { token, ...args }) => {
-		if (process.env.DEV_API_KEY) {
-			return {
-				ctx: {
-					...ctx,
-					me: {} as Doc<'users'>,
-				},
-				args: { ...args },
-			};
+	input: async (
+		ctx: GenericActionCtx<DataModel> & { me?: Doc<'users'> },
+		{ token, ...args },
+	) => {
+		if (ctx.me) {
+			return { ctx, args };
 		}
-		if (!token) throw new Error('Token is required');
+
+		if (!token) {
+			throw new Error('Token is required if auth is not already in ctx');
+		}
 
 		const me = (await ctx.runQuery(internal.users.queries.getUserSession, {
 			token,
@@ -85,7 +86,7 @@ export const authedAction = customAction(action, {
 				...ctx,
 				me: me,
 			},
-			args: { ...args },
+			args,
 		};
 	},
 });
