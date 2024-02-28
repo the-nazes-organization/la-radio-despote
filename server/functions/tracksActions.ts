@@ -4,12 +4,17 @@ import { v } from 'convex/values';
 import { authedAction } from '../lib/authed';
 import { api, internal } from './_generated/api';
 import { Id } from './_generated/dataModel';
+import { action } from './_generated/server';
 
-export const playTrack = authedAction({
+export const playTrack = action({
 	args: {
 		roomId: v.id('rooms'),
 	},
 	handler: async (ctx, args) => {
+		console.log('✅✅', ctx);
+		// @ts-expect-error
+		console.log('✅✅', ctx.me);
+
 		// We get the next track in queue
 		let nextTrackInQueue = await ctx.runQuery(api.tracks.getNextTrackInQueue, {
 			roomId: args.roomId,
