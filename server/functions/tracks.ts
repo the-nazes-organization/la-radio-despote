@@ -58,7 +58,7 @@ export const saveSpotifyTrackData = internalMutation({
 	},
 
 	handler: async (ctx, args) => {
-		return await Promise.all(
+		return Promise.all(
 			args.tracksToSave.map(async track => {
 				const existing = await ctx.db
 					.query('spotifyTrackData')

@@ -75,8 +75,9 @@ export const get = query({
 			});
 
 		const recommendationsPromise = detailsPromise
-			.then(details =>
-				details!.recommendations?.map(_id => ctx.db.get(_id) ?? []),
+			.then(
+				details =>
+					details && details.recommendations?.map(_id => ctx.db.get(_id) ?? []),
 			)
 			.then(recommendationsPromises =>
 				Promise.all(recommendationsPromises ?? []),

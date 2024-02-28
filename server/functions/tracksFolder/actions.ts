@@ -64,6 +64,13 @@ export const requestTrack = authedAction({
 			spotifyTrackDataId,
 		});
 
+		await ctx.runAction(
+			api.roomsFolder.actions.getAndUpdateRoomRecommendations,
+			{
+				roomId: args.roomId,
+			},
+		);
+
 		return trackId;
 	},
 });
