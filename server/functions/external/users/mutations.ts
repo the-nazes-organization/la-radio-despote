@@ -35,7 +35,7 @@ export const removeUserFromRoom = authedMutation({
 		roomId: v.id('rooms'),
 	},
 	handler: async (ctx, args) => {
-		const room = await ctx.db.get(args.roomId);
+		let room = await ctx.db.get(args.roomId);
 
 		if (!room) {
 			throw new Error('[ROOM - addUserToRoom]: Room not found');
@@ -50,6 +50,7 @@ export const removeUserFromRoom = authedMutation({
 			listeners: room?.listeners?.filter(listener => listener.id !== myId),
 		});
 
+		room = await ctx.db.get(args.roomId);
 		if (room?.listeners?.length === 0) {
 			// get last track
 			const currentPlayingTrack = await ctx.db
