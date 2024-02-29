@@ -49,5 +49,20 @@ export const removeUserFromRoom = authedMutation({
 		await ctx.db.patch(args.roomId, {
 			listeners: room?.listeners?.filter(listener => listener.id !== myId),
 		});
+
+		if (room?.listeners?.length === 0) {
+			// get last track
+			const currentPlayingTrack = await ctx.db
+				.query('tracks')
+				.withIndex('by_room_played_at')
+				.order('desc')
+				.first();
+
+			if (!currentPlayingTrack || !currentPlayingTrack.scheduledFunctionId)
+				return;
+
+			// cancel it
+			await ctx.scheduler.cancel(currentPlayingTrack.scheduledFunctionId);
+		}
 	},
 });
