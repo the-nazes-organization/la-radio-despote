@@ -58,7 +58,7 @@ export const PlayerDisplay = ({ playing, roomId }: PlayerDisplayProps) => {
 				</div>
 				<div className="pl-3 flex flex-col gap-2">
 					<NextTrackButton />
-					<LikeButton roomId={roomId} />
+					<LikeButton roomId={roomId} playing={playing} />
 				</div>
 			</div>
 			<TimeSlider />
