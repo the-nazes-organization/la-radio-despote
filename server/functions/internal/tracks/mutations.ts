@@ -77,7 +77,7 @@ export const saveSpotifyTrackData = internalMutation({
 
 export const insertTrackInDB = internalMutation({
 	args: {
-		askedBy: v.optional(v.id('users')),
+		askedBy: v.id('users'),
 		duration: v.number(),
 		playedAt: v.optional(v.number()),
 		askedAt: v.number(),

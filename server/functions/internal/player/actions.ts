@@ -8,6 +8,7 @@ import { internalAction } from '../../_generated/server';
 export const playTrack = internalAction({
 	args: {
 		roomId: v.id('rooms'),
+		userId: v.id('users'),
 	},
 	handler: async (ctx, args) => {
 		// We get the next track in queue
@@ -27,6 +28,7 @@ export const playTrack = internalAction({
 			await ctx.runAction(internal.internal.tracks.actions.requestTrack, {
 				roomId: args.roomId,
 				spotifyTrackId: recommendation.spotifyId,
+				userId: args.userId,
 			});
 
 			nextTrackInQueue = (await ctx.runQuery(
@@ -51,7 +53,7 @@ export const playTrack = internalAction({
 		const scheduledFunctionId = (await ctx.scheduler.runAfter(
 			nextTrackInQueue.spotifyTrackData.duration,
 			internal.internal.player.actions.playTrack,
-			{ roomId: args.roomId },
+			{ roomId: args.roomId, userId: args.userId },
 		)) as unknown as { jobId: Id<'_scheduled_functions'> };
 
 		// We update the track to set the scheduledFunctionId field

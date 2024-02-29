@@ -28,6 +28,7 @@ export const playNextTrack = authedAction({
 
 		await ctx.runAction(internal.internal.player.actions.playTrack, {
 			roomId: args.roomId,
+			userId: ctx.me!._id,
 		});
 	},
 });

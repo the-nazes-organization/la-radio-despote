@@ -1,15 +1,14 @@
 'use node';
 import { v } from 'convex/values';
+import { authedAction } from '../../../lib/authed';
 import { spotifyApi } from '../../../lib/spotifyApi';
 import { internal } from '../../_generated/api';
 import { Id } from '../../_generated/dataModel';
-import { internalAction } from '../../_generated/server';
 import { formatTrack } from '../../_helpers';
 
-export const requestTrack = internalAction({
+export const requestTrack = authedAction({
 	args: {
 		spotifyTrackId: v.string(),
-		userId: v.id('users'),
 		roomId: v.id('rooms'),
 	},
 
@@ -24,7 +23,7 @@ export const requestTrack = internalAction({
 		const trackId: Id<'tracks'> = await ctx.runMutation(
 			internal.internal.tracks.mutations.insertTrackInDB,
 			{
-				askedBy: args.userId,
+				askedBy: ctx.me?._id as Id<'users'>,
 				askedAt: Date.now(),
 				duration: track.duration_ms,
 				room: args.roomId,

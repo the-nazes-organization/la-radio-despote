@@ -1,5 +1,7 @@
+import { useAuthedAction } from '@/lib/useAuthedAction';
 import { Loader2, Plus } from 'lucide-react';
 import { useState } from 'react';
+import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
 import { Button } from './ui/button';
 
@@ -12,18 +14,18 @@ export const AddTrackButton = ({
 	roomId,
 	spotifyTrackId,
 }: AddTrackButtonProps) => {
-	// const authedRequestTrack = useAuthedAction(
-	// 	api.external.rooms..actions.requestTrack,
-	// );
+	const authedRequestTrack = useAuthedAction(
+		api.external.tracks.actions.requestTrack,
+	);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleClick = async () => {
 		try {
 			setIsLoading(true);
-			// await authedRequestTrack({
-			// 	spotifyTrackId,
-			// 	roomId,
-			// });
+			await authedRequestTrack({
+				spotifyTrackId,
+				roomId,
+			});
 		} finally {
 			setTimeout(() => {
 				setIsLoading(false);

@@ -25,7 +25,7 @@ export const internalRequestTrack = internalAction({
 		const trackId: Id<'tracks'> = await ctx.runMutation(
 			internal.internal.tracks.mutations.insertTrackInDB,
 			{
-				askedBy: args.userId,
+				askedBy: 'mockUserId' as Id<'users'>,
 				askedAt: Date.now(),
 				duration: track.duration_ms,
 				room: args.roomId,
@@ -99,6 +99,7 @@ export const playTrack = internalAction({
 			await ctx.runAction(internal.internal.tracks.actions.requestTrack, {
 				roomId: args.roomId,
 				spotifyTrackId: recommendation.spotifyId,
+				userId: 'mockUserId' as Id<'users'>,
 			});
 
 			nextTrackInQueue = (await ctx.runQuery(
@@ -122,7 +123,7 @@ export const playTrack = internalAction({
 		// We schedule the next track to be played
 		const scheduledFunctionId = (await ctx.scheduler.runAfter(
 			nextTrackInQueue.spotifyTrackData.duration,
-			internal.internal.player.actions.playTrack, // MIGHT BE WRONG
+			internal.dev.actions.playTrack, // MIGHT BE WRONG
 			{ roomId: args.roomId },
 		)) as unknown as { jobId: Id<'_scheduled_functions'> };
 
