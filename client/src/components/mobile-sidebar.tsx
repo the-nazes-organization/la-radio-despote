@@ -24,9 +24,16 @@ export const MobileSidebar = ({ rooms }: MobileSidebarProps) => {
 				<Menu className=" text-white " />
 			</SheetTrigger>
 			<SheetContent side={'left'} className={'background p-4 py-12'}>
-				<Link to="/app" className="flex items-center space-x-2">
+				<Link
+					to="/app"
+					className={cn(
+						'flex items-center space-x-2 p-2',
+						!params.radio && 'bg-secondary rounded',
+					)}
+				>
 					<Home /> <TypographyH3>Home</TypographyH3>
 				</Link>
+
 				<hr className="my-6" />
 				<TypographyH3>Radios</TypographyH3>
 				<ul className="space-y-3 pt-4">

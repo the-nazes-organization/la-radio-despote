@@ -19,7 +19,10 @@ export const Navbar = ({ rooms, className }: NavbarProps) => {
 		<nav
 			className={`hidden md:flex flex-col items-center py-4 space-y-3.5 ${className}`}
 		>
-			<Link to="/app">
+			<Link
+				to="/app"
+				className={cn('p-2', !params.radio && 'bg-secondary rounded')}
+			>
 				<Home />
 			</Link>
 
