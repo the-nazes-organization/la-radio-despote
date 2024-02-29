@@ -7,13 +7,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { preloadQuery } from '@/lib/preload-query';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useMutation, usePreloadedQuery } from 'convex/react';
+import { usePreloadedQuery } from 'convex/react';
 
 import { AddTrackButton } from '@/components/add-track-button';
 import { AddTrackModalButton } from '@/components/add-track-modal';
 import { SpotifyAvatar } from '@/components/spotify-avatar';
 import { CommandMenu } from '@/components/ui/command-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useAuthedMutation } from '@/lib/useAuthedMutation';
 import { X } from 'lucide-react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
@@ -44,7 +45,7 @@ function Radio() {
 		Route.useLoaderData(),
 	);
 
-	const removeTrack = useMutation(
+	const removeTrack = useAuthedMutation(
 		api.external.rooms.mutations.removeTrackFromQueue,
 	);
 
