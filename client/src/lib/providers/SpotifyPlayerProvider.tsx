@@ -110,7 +110,7 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 				if (availableDevices.devices.length > 0) {
 					setTimeout(async () => {
 						await sdk.player.seekToPosition(positionMs);
-					}, 300);
+					}, 100);
 				}
 			},
 			pause() {

@@ -20,13 +20,13 @@ export const PlayerDisplay = ({ playing, roomId }: PlayerDisplayProps) => {
 			return;
 		}
 		const positionMs = differenceInMilliseconds(
-			new Date(),
-			new Date(playing.playedAt ?? Date.now()),
+			Date.now(),
+			new Date(playing.playedAt ?? Date.now()).valueOf(),
 		);
 
 		player.actions.play({
 			spotifyId: playing.spotifyTrackData.spotifyId,
-			positionMs,
+			positionMs: positionMs > 0 ? positionMs : 0,
 		});
 
 		return () => {
