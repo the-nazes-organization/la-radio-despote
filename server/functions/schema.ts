@@ -29,8 +29,7 @@ export default defineSchema(
 		}),
 
 		tracks: defineTable({
-			// todo remove optional here
-			askedBy: v.optional(v.id('users')),
+			askedBy: v.union(v.id('users'), v.null()),
 			askedAt: v.number(),
 			playedAt: v.optional(v.number()),
 			duration: v.number(),

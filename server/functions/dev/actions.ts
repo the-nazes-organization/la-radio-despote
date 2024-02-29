@@ -25,7 +25,7 @@ export const internalRequestTrack = internalAction({
 		const trackId: Id<'tracks'> = await ctx.runMutation(
 			internal.internal.tracks.mutations.insertTrackInDB,
 			{
-				askedBy: 'mockUserId' as Id<'users'>,
+				askedBy: null,
 				askedAt: Date.now(),
 				duration: track.duration_ms,
 				room: args.roomId,
@@ -161,13 +161,15 @@ export const internalGetAndUpdateRoomRecommendations = internalAction({
 		}
 
 		// We look for recommendations from playing track and queue
-		const recommendationsBySpotify = await spotifyApi.recommendations.get({
-			seed_tracks: [
-				room.playing.spotifyTrackData.spotifyId,
-				...room.queue.map(track => track.spotifyTrackData.spotifyId),
-			],
-			limit: 5,
-		});
+		const recommendationsBySpotify = await spotifyApi.recommendations
+			.get({
+				seed_tracks: [
+					room.playing.spotifyTrackData.spotifyId,
+					...room.queue.map(track => track.spotifyTrackData.spotifyId),
+				],
+				limit: 5,
+			})
+			.catch(() => ({ tracks: [] }));
 
 		// We save the recommendations
 		const recommendedTrackIds = await ctx.runMutation(
