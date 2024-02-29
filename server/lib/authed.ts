@@ -3,11 +3,11 @@ import {
 	customMutation,
 	customQuery,
 } from 'convex-helpers/server/customFunctions.js';
+import { GenericActionCtx } from 'convex/server';
 import { v } from 'convex/values';
 import { internal } from '../functions/_generated/api';
 import { DataModel, Doc } from '../functions/_generated/dataModel';
 import { action, mutation, query } from '../functions/_generated/server';
-import { GenericActionCtx } from 'convex/server';
 
 export const authedQuery = customQuery(query, {
 	args: { token: v.optional(v.string()) },
@@ -73,7 +73,7 @@ export const authedAction = customAction(action, {
 			throw new Error('Token is required if auth is not already in ctx');
 		}
 
-		const me = (await ctx.runQuery(internal.users.queries.getUserSession, {
+		const me = (await ctx.runQuery(internal.internal.users.queries.getUser, {
 			token,
 		})) as Doc<'users'>;
 

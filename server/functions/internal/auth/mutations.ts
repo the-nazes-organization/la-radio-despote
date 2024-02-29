@@ -1,6 +1,6 @@
 import { v } from 'convex/values';
-import { internalMutation } from '../_generated/server';
-import { spotifyUserProfileSchema } from '../schema';
+import { internalMutation } from '../../_generated/server';
+import { spotifyUserProfileSchema } from '../../schema';
 
 export const createSession = internalMutation({
 	args: {

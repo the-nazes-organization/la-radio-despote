@@ -1,10 +1,10 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import { query } from '../../_generated/server';
 
 /**
  * List all rooms.
  */
-export const list = query({
+export const listRooms = query({
 	args: {},
 	handler: async ctx => {
 		const rooms = await ctx.db.query('rooms').take(100);
@@ -30,9 +30,6 @@ export const list = query({
 	},
 });
 
-/**
- * Get the detail of a room.
- */
 export const get = query({
 	args: { roomId: v.id('rooms') },
 	handler: async (ctx, args) => {
@@ -96,53 +93,5 @@ export const get = query({
 			playing,
 			recommendations,
 		};
-	},
-});
-
-/**
- * Update recommendations.
- */
-export const updateRoomRecommendations = mutation({
-	args: {
-		roomId: v.id('rooms'),
-		recommendations: v.array(v.id('spotifyTrackData')),
-	},
-	handler: async (ctx, args) => {
-		return ctx.db.patch(args.roomId, {
-			recommendations: args.recommendations,
-		});
-	},
-});
-
-export const getRecommendatedTrack = query({
-	args: {
-		roomId: v.id('rooms'),
-	},
-	handler: async (ctx, args) => {
-		return ctx.db.get(args.roomId).then(async room => {
-			const recommendation = await ctx.db.get(room!.recommendations[0]!);
-
-			if (!recommendation) {
-				throw new Error('No recommendations');
-			}
-
-			return recommendation;
-		});
-	},
-});
-
-export const removeTrackFromRecommendations = mutation({
-	args: {
-		roomId: v.id('rooms'),
-		spotifyTrackDataId: v.id('spotifyTrackData'),
-	},
-	handler: async (ctx, args) => {
-		const room = await ctx.db.get(args.roomId);
-		const recommendations = room!.recommendations.filter(
-			recommendation => recommendation !== args.spotifyTrackDataId,
-		);
-		return ctx.db.patch(args.roomId, {
-			recommendations,
-		});
 	},
 });

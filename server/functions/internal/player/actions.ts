@@ -1,9 +1,9 @@
 'use node';
 
 import { v } from 'convex/values';
-import { api, internal } from './_generated/api';
-import { Id } from './_generated/dataModel';
-import { internalAction } from './_generated/server';
+import { internal } from '../../_generated/api';
+import { Id } from '../../_generated/dataModel';
+import { internalAction } from '../../_generated/server';
 
 export const playTrack = internalAction({
 	args: {
@@ -11,43 +11,52 @@ export const playTrack = internalAction({
 	},
 	handler: async (ctx, args) => {
 		// We get the next track in queue
-		let nextTrackInQueue = await ctx.runQuery(api.tracks.getNextTrackInQueue, {
-			roomId: args.roomId,
-		});
+		let nextTrackInQueue = await ctx.runQuery(
+			internal.internal.rooms.queries.getNextTrackInQueue,
+			{
+				roomId: args.roomId,
+			},
+		);
 
 		if (!nextTrackInQueue) {
 			const recommendation = await ctx.runQuery(
-				api.rooms.getRecommendatedTrack,
+				internal.internal.rooms.queries.getFirstRecommendatedTrack,
 				{ roomId: args.roomId },
 			);
 
-			await ctx.runAction(api.tracksFolder.actions.requestTrack, {
+			await ctx.runAction(internal.internal.tracks.actions.requestTrack, {
 				roomId: args.roomId,
 				spotifyTrackId: recommendation.spotifyId,
 			});
 
-			nextTrackInQueue = (await ctx.runQuery(api.tracks.getNextTrackInQueue, {
-				roomId: args.roomId,
-			}))!;
+			nextTrackInQueue = (await ctx.runQuery(
+				internal.internal.rooms.queries.getNextTrackInQueue,
+				{
+					roomId: args.roomId,
+				},
+			))!;
 		}
 
 		// We update the track to set the playedAt field
 		const now = Date.now();
-		await ctx.runMutation(internal.tracks.updateTrack, {
-			trackId: nextTrackInQueue._id,
-			playedAt: now,
-		});
+		await ctx.runMutation(
+			internal.internal.tracks.mutations.updateTrackPlaytime,
+			{
+				trackId: nextTrackInQueue._id,
+				playedAt: now,
+			},
+		);
 
 		// We schedule the next track to be played
 		const scheduledFunctionId = (await ctx.scheduler.runAfter(
 			nextTrackInQueue.spotifyTrackData.duration,
-			internal.tracksActions.playTrack,
+			internal.internal.player.actions.playTrack,
 			{ roomId: args.roomId },
 		)) as unknown as { jobId: Id<'_scheduled_functions'> };
 
 		// We update the track to set the scheduledFunctionId field
 		await ctx.runMutation(
-			internal.tracksFolder.mutations.updateTrackScheduledFunctionId,
+			internal.internal.tracks.mutations.updateTrackScheduledFunctionId,
 			{
 				trackId: nextTrackInQueue._id,
 				scheduledFunctionId: scheduledFunctionId.jobId,
@@ -55,7 +64,7 @@ export const playTrack = internalAction({
 		);
 
 		await ctx.runAction(
-			api.roomsFolder.actions.getAndUpdateRoomRecommendations,
+			internal.internal.rooms.actions.getAndUpdateRoomRecommendations,
 			{
 				roomId: args.roomId,
 			},

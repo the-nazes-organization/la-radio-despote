@@ -11,7 +11,7 @@ import { ListenersList } from './$radio/-components/listeners-list';
 export const Route = createFileRoute('/app/$radio')({
 	component: LayoutComponent,
 	loader: async ({ params: { radio } }) => {
-		const preloaded = await preloadQuery(api.rooms.get, {
+		const preloaded = await preloadQuery(api.external.rooms.queries.get, {
 			roomId: radio as Id<'rooms'>,
 		}).catch(error => {
 			console.log(`👨‍🚒`, error);
@@ -29,9 +29,11 @@ function LayoutComponent() {
 	const params = Route.useParams<{ radio: Id<'rooms'> }>();
 	const room = usePreloadedQuery(Route.useLoaderData());
 
-	const addUserToRoom = useAuthedMutation(api.users.mutations.addUserToRoom);
+	const addUserToRoom = useAuthedMutation(
+		api.external.users.mutations.addUserToRoom,
+	);
 	const removeUserFromRoom = useAuthedMutation(
-		api.users.mutations.removeUserFromRoom,
+		api.external.users.mutations.removeUserFromRoom,
 	);
 	useEffect(() => {
 		addUserToRoom({

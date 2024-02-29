@@ -1,17 +1,17 @@
 'use node';
 
 import { v } from 'convex/values';
-import { spotifyApi } from '../../lib/spotifyApi';
-import { api, internal } from '../_generated/api';
-import { action } from '../_generated/server';
-import { formatTrack } from '../_helpers';
+import { spotifyApi } from '../../../lib/spotifyApi';
+import { api, internal } from '../../_generated/api';
+import { internalAction } from '../../_generated/server';
+import { formatTrack } from '../../_helpers';
 
-export const getAndUpdateRoomRecommendations = action({
+export const getAndUpdateRoomRecommendations = internalAction({
 	args: {
 		roomId: v.id('rooms'),
 	},
 	handler: async (ctx, args) => {
-		const room = await ctx.runQuery(api.rooms.get, {
+		const room = await ctx.runQuery(api.external.rooms.queries.get, {
 			roomId: args.roomId,
 		});
 
@@ -34,16 +34,19 @@ export const getAndUpdateRoomRecommendations = action({
 
 		// We save the recommendations
 		const recommendedTrackIds = await ctx.runMutation(
-			internal.tracks.saveSpotifyTrackData,
+			internal.internal.tracks.mutations.saveSpotifyTrackData,
 			{ tracksToSave: recommendationsBySpotify.tracks.map(formatTrack) },
 		);
 
 		const recommendations = new Set([...recommendedTrackIds]);
 
 		// We update the room with the recommendations
-		await ctx.runMutation(api.rooms.updateRoomRecommendations, {
-			roomId: args.roomId,
-			recommendations: Array.from(recommendations),
-		});
+		await ctx.runMutation(
+			internal.internal.rooms.mutations.updateRoomRecommendations,
+			{
+				roomId: args.roomId,
+				recommendations: Array.from(recommendations),
+			},
+		);
 	},
 });

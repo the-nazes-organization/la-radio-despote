@@ -1,7 +1,7 @@
 import { v } from 'convex/values';
-import { query } from '../_generated/server';
+import { internalQuery } from '../../_generated/server';
 
-export const getPlayingTrack = query({
+export const getPlayingTrack = internalQuery({
 	args: {
 		roomId: v.id('rooms'),
 	},
@@ -23,20 +23,5 @@ export const getPlayingTrack = query({
 		}
 
 		return currentPlayingTrack;
-	},
-});
-
-export const getRoom = query({
-	args: {
-		roomId: v.id('rooms'),
-	},
-	handler: async (ctx, args) => {
-		const room = await ctx.db.get(args.roomId);
-
-		if (!room) {
-			throw new Error('[ROOM - getRoom]: Room not found');
-		}
-
-		return room;
 	},
 });

@@ -13,7 +13,7 @@ const heart = confetti.shapeFromPath({
 });
 
 export const ReactionsDisplay = ({ roomId }: ReactionsDisplayProps) => {
-	const reactions = useQuery(api.reactions.queries.getReactions, {
+	const reactions = useQuery(api.external.reactions.queries.getReactions, {
 		roomId,
 	});
 	const previousReactions = useRef<Doc<'reactions'>[]>([]);

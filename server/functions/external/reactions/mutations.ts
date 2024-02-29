@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { authedMutation } from '../../lib/authed';
+import { authedMutation } from '../../../lib/authed';
 
 export const addLikeReaction = authedMutation({
 	args: {

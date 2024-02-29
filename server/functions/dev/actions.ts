@@ -18,12 +18,12 @@ export const internalRequestTrack = internalAction({
 		const track = await spotifyApi.tracks.get(args.spotifyTrackId);
 
 		const [spotifyTrackDataId] = await ctx.runMutation(
-			internal.tracks.saveSpotifyTrackData,
+			internal.internal.tracks.mutations.saveSpotifyTrackData,
 			{ tracksToSave: [formatTrack(track)] },
 		);
 
 		const trackId: Id<'tracks'> = await ctx.runMutation(
-			internal.tracks.addTrackToQueue,
+			internal.internal.tracks.mutations.insertTrackInDB,
 			{
 				askedBy: args.userId,
 				askedAt: Date.now(),
@@ -33,10 +33,13 @@ export const internalRequestTrack = internalAction({
 			},
 		);
 
-		await ctx.runMutation(api.rooms.removeTrackFromRecommendations, {
-			roomId: args.roomId,
-			spotifyTrackDataId,
-		});
+		await ctx.runMutation(
+			internal.internal.rooms.mutations.removeTrackFromRecommendations,
+			{
+				roomId: args.roomId,
+				spotifyTrackDataId,
+			},
+		);
 
 		await ctx.runAction(
 			internal.dev.actions.internalGetAndUpdateRoomRecommendations,
@@ -56,7 +59,7 @@ export const playTrack = internalAction({
 	handler: async (ctx, args) => {
 		// We get current playing track
 		const currentPlayingTrack = (await ctx.runQuery(
-			api.roomsFolder.queries.getPlayingTrack,
+			internal.internal.player.queries.getPlayingTrack,
 			{
 				roomId: args.roomId,
 			},
@@ -64,12 +67,15 @@ export const playTrack = internalAction({
 
 		// We cancel the current playing track
 		if (currentPlayingTrack?.scheduledFunctionId) {
-			await ctx.runMutation(api.messages.mutations.cancelMessage, {
-				id: currentPlayingTrack.scheduledFunctionId,
-			});
+			await ctx.runMutation(
+				internal.internal.scheduler.mutations.cancelScheduledFunction,
+				{
+					id: currentPlayingTrack.scheduledFunctionId,
+				},
+			);
 		}
 
-		const room = await ctx.runQuery(api.roomsFolder.queries.getRoom, {
+		const room = await ctx.runQuery(internal.internal.rooms.queries.getRoom, {
 			roomId: args.roomId,
 		});
 		if (!room.listeners.length) {
@@ -77,43 +83,52 @@ export const playTrack = internalAction({
 		}
 
 		// We get the next track in queue
-		let nextTrackInQueue = await ctx.runQuery(api.tracks.getNextTrackInQueue, {
-			roomId: args.roomId,
-		});
+		let nextTrackInQueue = await ctx.runQuery(
+			internal.internal.rooms.queries.getNextTrackInQueue,
+			{
+				roomId: args.roomId,
+			},
+		);
 
 		if (!nextTrackInQueue) {
 			const recommendation = await ctx.runQuery(
-				api.rooms.getRecommendatedTrack,
+				internal.internal.rooms.queries.getFirstRecommendatedTrack,
 				{ roomId: args.roomId },
 			);
 
-			await ctx.runAction(api.tracksFolder.actions.requestTrack, {
+			await ctx.runAction(internal.internal.tracks.actions.requestTrack, {
 				roomId: args.roomId,
 				spotifyTrackId: recommendation.spotifyId,
 			});
 
-			nextTrackInQueue = (await ctx.runQuery(api.tracks.getNextTrackInQueue, {
-				roomId: args.roomId,
-			}))!;
+			nextTrackInQueue = (await ctx.runQuery(
+				internal.internal.rooms.queries.getNextTrackInQueue,
+				{
+					roomId: args.roomId,
+				},
+			))!;
 		}
 
 		// We update the track to set the playedAt field
 		const now = Date.now();
-		await ctx.runMutation(internal.tracks.updateTrack, {
-			trackId: nextTrackInQueue._id,
-			playedAt: now,
-		});
+		await ctx.runMutation(
+			internal.internal.tracks.mutations.updateTrackPlaytime,
+			{
+				trackId: nextTrackInQueue._id,
+				playedAt: now,
+			},
+		);
 
 		// We schedule the next track to be played
 		const scheduledFunctionId = (await ctx.scheduler.runAfter(
 			nextTrackInQueue.spotifyTrackData.duration,
-			api.tracksActions.playTrack,
+			internal.internal.player.actions.playTrack, // MIGHT BE WRONG
 			{ roomId: args.roomId },
 		)) as unknown as { jobId: Id<'_scheduled_functions'> };
 
 		// We update the track to set the scheduledFunctionId field
 		await ctx.runMutation(
-			internal.tracksFolder.mutations.updateTrackScheduledFunctionId,
+			internal.internal.tracks.mutations.updateTrackScheduledFunctionId,
 			{
 				trackId: nextTrackInQueue._id,
 				scheduledFunctionId: scheduledFunctionId.jobId,
@@ -134,7 +149,7 @@ export const internalGetAndUpdateRoomRecommendations = internalAction({
 		roomId: v.id('rooms'),
 	},
 	handler: async (ctx, args) => {
-		const room = await ctx.runQuery(api.rooms.get, {
+		const room = await ctx.runQuery(api.external.rooms.queries.get, {
 			roomId: args.roomId,
 		});
 
@@ -155,14 +170,17 @@ export const internalGetAndUpdateRoomRecommendations = internalAction({
 
 		// We save the recommendations
 		const recommendedTrackIds = await ctx.runMutation(
-			internal.tracks.saveSpotifyTrackData,
+			internal.internal.tracks.mutations.saveSpotifyTrackData,
 			{ tracksToSave: recommendationsBySpotify.tracks.map(formatTrack) },
 		);
 
 		// We update the room with the recommendations
-		await ctx.runMutation(api.rooms.updateRoomRecommendations, {
-			roomId: args.roomId,
-			recommendations: recommendedTrackIds,
-		});
+		await ctx.runMutation(
+			internal.internal.rooms.mutations.updateRoomRecommendations,
+			{
+				roomId: args.roomId,
+				recommendations: recommendedTrackIds,
+			},
+		);
 	},
 });

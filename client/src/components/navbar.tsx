@@ -6,7 +6,7 @@ import { TypographyLarge, TypographyMuted } from './typography';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 interface NavbarProps {
-	rooms: FunctionReturnType<typeof api.rooms.list>;
+	rooms: FunctionReturnType<typeof api.external.rooms.queries.listRooms>;
 }
 
 export const Navbar = ({ rooms }: NavbarProps) => {

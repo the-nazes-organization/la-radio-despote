@@ -2,8 +2,8 @@
 
 import { AccessToken, SpotifyApi } from '@spotify/web-api-ts-sdk';
 import { v } from 'convex/values';
-import { action } from '../_generated/server';
-import { internal } from '../_generated/api';
+import { internal } from '../../_generated/api';
+import { action } from '../../_generated/server';
 
 export const createNewSessionInDatabase = action({
 	args: {
@@ -19,7 +19,7 @@ export const createNewSessionInDatabase = action({
 			throw new Error('Invalid token');
 		});
 
-		await ctx.runMutation(internal.auth.mutations.createSession, {
+		await ctx.runMutation(internal.internal.auth.mutations.createSession, {
 			token: args.token,
 			spotifyUserProfile: {
 				country: me.country,

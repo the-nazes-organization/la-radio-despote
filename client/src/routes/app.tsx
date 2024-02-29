@@ -16,7 +16,7 @@ export const Route = createFileRoute('/app')({
 		}
 	},
 	loader: () => {
-		return preloadQuery(api.rooms.list, {});
+		return preloadQuery(api.external.rooms.queries.listRooms, {});
 	},
 	component: LayoutComponent,
 });

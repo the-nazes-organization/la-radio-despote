@@ -1,7 +1,7 @@
 import { v } from 'convex/values';
-import { internalQuery } from '../_generated/server';
+import { internalQuery } from '../../_generated/server';
 
-export const getUserSession = internalQuery({
+export const getUser = internalQuery({
 	args: {
 		token: v.string(),
 	},
@@ -16,6 +16,8 @@ export const getUserSession = internalQuery({
 			return null;
 		}
 
-		return ctx.db.get(session.userId);
+		const user = await ctx.db.get(session.userId);
+
+		return user;
 	},
 });

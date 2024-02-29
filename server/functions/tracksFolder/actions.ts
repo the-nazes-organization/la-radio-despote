@@ -1,76 +1,51 @@
-'use node';
+// 'use node';
 
-import { v } from 'convex/values';
-import { authedAction } from '../../lib/authed';
-import { spotifyApi } from '../../lib/spotifyApi';
-import { api, internal } from '../_generated/api';
-import { Doc, Id } from '../_generated/dataModel';
-import { formatTrack } from '../_helpers';
+// import { v } from 'convex/values';
+// import { authedAction } from '../../lib/authed';
+// import { spotifyApi } from '../../lib/spotifyApi';
+// import { api, internal } from '../_generated/api';
+// import { Doc, Id } from '../_generated/dataModel';
+// import { formatTrack } from '../_helpers';
+// import { internalAction } from '../_generated/server';
 
-export const skipTrack = authedAction({
-	args: {
-		roomId: v.id('rooms'),
-	},
-	handler: async (ctx, args) => {
-		// We get current playing track
-		const currentPlayingTrack = (await ctx.runQuery(
-			api.roomsFolder.queries.getPlayingTrack,
-			{
-				roomId: args.roomId,
-			},
-		)) as Doc<'tracks'>;
+// export const requestTrack = internalAction({
+// 	args: {
+// 		spotifyTrackId: v.string(),
+// 		userId: v.optional(v.id('users')), // todo remove optional
+// 		roomId: v.id('rooms'),
+// 	},
 
-		// We cancel the current playing track
-		if (currentPlayingTrack?.scheduledFunctionId) {
-			await ctx.runMutation(api.messages.mutations.cancelMessage, {
-				id: currentPlayingTrack.scheduledFunctionId,
-			});
-		}
+// 	handler: async (ctx, args) => {
+// 		const track = await spotifyApi.tracks.get(args.spotifyTrackId);
 
-		await ctx.runAction(internal.tracksActions.playTrack, {
-			roomId: args.roomId,
-		});
-	},
-});
+// 		const [spotifyTrackDataId] = await ctx.runMutation(
+// 			internal.tracks.saveSpotifyTrackData,
+// 			{ tracksToSave: [formatTrack(track)] },
+// 		);
 
-export const requestTrack = authedAction({
-	args: {
-		spotifyTrackId: v.string(),
-		userId: v.optional(v.id('users')), // todo remove optional
-		roomId: v.id('rooms'),
-	},
+// 		const trackId: Id<'tracks'> = await ctx.runMutation(
+// 			internal.tracks.addTrackToQueue,
+// 			{
+// 				askedBy: args.userId,
+// 				askedAt: Date.now(),
+// 				duration: track.duration_ms,
+// 				room: args.roomId,
+// 				spotifyTrackDataId,
+// 			},
+// 		);
 
-	handler: async (ctx, args) => {
-		const track = await spotifyApi.tracks.get(args.spotifyTrackId);
+// 		await ctx.runMutation(api.rooms.removeTrackFromRecommendations, {
+// 			roomId: args.roomId,
+// 			spotifyTrackDataId,
+// 		});
 
-		const [spotifyTrackDataId] = await ctx.runMutation(
-			internal.tracks.saveSpotifyTrackData,
-			{ tracksToSave: [formatTrack(track)] },
-		);
+// 		await ctx.runAction(
+// 			api.roomsFolder.actions.getAndUpdateRoomRecommendations,
+// 			{
+// 				roomId: args.roomId,
+// 			},
+// 		);
 
-		const trackId: Id<'tracks'> = await ctx.runMutation(
-			internal.tracks.addTrackToQueue,
-			{
-				askedBy: args.userId,
-				askedAt: Date.now(),
-				duration: track.duration_ms,
-				room: args.roomId,
-				spotifyTrackDataId,
-			},
-		);
-
-		await ctx.runMutation(api.rooms.removeTrackFromRecommendations, {
-			roomId: args.roomId,
-			spotifyTrackDataId,
-		});
-
-		await ctx.runAction(
-			api.roomsFolder.actions.getAndUpdateRoomRecommendations,
-			{
-				roomId: args.roomId,
-			},
-		);
-
-		return trackId;
-	},
-});
+// 		return trackId;
+// 	},
+// });

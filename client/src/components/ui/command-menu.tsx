@@ -1,8 +1,11 @@
 import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
 import { Route } from '@/routes/app/$radio';
 import { useNavigate } from '@tanstack/react-router';
+import { useQuery } from 'convex/react';
 import { ListMusic, LogOut } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { api } from 'server';
+import { Id } from 'server/functions/_generated/dataModel';
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -11,9 +14,6 @@ import {
 	CommandItem,
 	CommandList,
 } from './command';
-import { useQuery } from 'convex/react';
-import { api } from 'server';
-import { Id } from 'server/functions/_generated/dataModel';
 
 export function CommandMenu() {
 	const [open, setOpen] = useState(false);
@@ -21,7 +21,7 @@ export function CommandMenu() {
 	const navigate = useNavigate();
 	const params = Route.useParams();
 
-	const query = useQuery(api.rooms.get, {
+	const query = useQuery(api.external.rooms.queries.get, {
 		roomId: params.radio as Id<'rooms'>,
 	});
 

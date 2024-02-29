@@ -20,7 +20,7 @@ import { PlayerDisplay } from './-components/player-display';
 
 export const Route = createFileRoute('/app/$radio/')({
 	loader: async ({ params: { radio } }) => {
-		const preloaded = await preloadQuery(api.rooms.get, {
+		const preloaded = await preloadQuery(api.external.rooms.queries.get, {
 			roomId: radio as Id<'rooms'>,
 		}).catch(error => {
 			console.log(`👨‍🚒`, error);
@@ -43,7 +43,9 @@ function Radio() {
 		Route.useLoaderData(),
 	);
 
-	const removeTrack = useMutation(api.tracks.removeTrack);
+	const removeTrack = useMutation(
+		api.external.rooms.mutations.removeTrackFromQueue,
+	);
 
 	return (
 		<div className="p-6 border rounded-md h-full flex flex-col justify-between items-center">

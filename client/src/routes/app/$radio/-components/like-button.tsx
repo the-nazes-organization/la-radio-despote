@@ -15,7 +15,7 @@ export const LikeButton = ({ roomId }: LikeButtonProps) => {
 	const player = useSpotifyPlayerStore();
 	const [isLiked, setIsLiked] = useState(false);
 	const addLikeReaction = useAuthedMutation(
-		api.reactions.mutations.addLikeReaction,
+		api.external.reactions.mutations.addLikeReaction,
 	);
 
 	const currentTrack = player.state?.track_window.current_track;

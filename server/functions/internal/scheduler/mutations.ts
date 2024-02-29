@@ -1,7 +1,7 @@
 import { v } from 'convex/values';
-import { mutation } from '../_generated/server';
+import { internalMutation } from '../../_generated/server';
 
-export const cancelMessage = mutation({
+export const cancelScheduledFunction = internalMutation({
 	args: {
 		id: v.id('_scheduled_functions'),
 	},

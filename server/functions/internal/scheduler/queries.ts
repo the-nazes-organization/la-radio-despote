@@ -1,7 +1,7 @@
 import { v } from 'convex/values';
-import { query } from '../_generated/server';
+import { internalQuery } from '../../_generated/server';
 
-export const listScheduledMessages = query({
+export const listScheduledMessages = internalQuery({
 	args: {},
 	handler: async (ctx, args) => {
 		return await ctx.db.system
@@ -12,7 +12,7 @@ export const listScheduledMessages = query({
 	},
 });
 
-export const getScheduledMessage = query({
+export const getScheduledMessage = internalQuery({
 	args: {
 		id: v.id('_scheduled_functions'),
 	},
