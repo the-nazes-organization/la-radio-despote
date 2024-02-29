@@ -1,12 +1,13 @@
 import { v } from 'convex/values';
 import { authedMutation } from '../../../lib/authed';
+import { internal } from '../../_generated/api';
 
 export const addUserToRoom = authedMutation({
 	args: {
 		roomId: v.id('rooms'),
 	},
 	handler: async (ctx, args) => {
-		const room = await ctx.db.get(args.roomId);
+		let room = await ctx.db.get(args.roomId);
 
 		if (!room) {
 			throw new Error('[ROOM - addUserToRoom]: Room not found');
@@ -27,6 +28,35 @@ export const addUserToRoom = authedMutation({
 		await ctx.db.patch(args.roomId, {
 			listeners,
 		});
+
+		room = await ctx.db.get(args.roomId);
+		if (room?.listeners?.length === 1) {
+			const lastTrack = await ctx.db
+				.query('tracks')
+				.withIndex('by_room_played_at', q => q.eq('room', args.roomId))
+				.order('desc')
+				.first();
+
+			if (!lastTrack || lastTrack.scheduledFunctionId) return;
+			ctx.db.patch(lastTrack._id, {
+				playedAt: Date.now(),
+			});
+
+			// add job to scheduler
+			const scheduledFunctionId = await ctx.scheduler.runAfter(
+				lastTrack.duration,
+				internal.internal.player.actions.playTrack,
+				{
+					roomId: args.roomId,
+					userId: ctx.me._id,
+				},
+			);
+
+			// update track with scheduledFunctionId
+			await ctx.db.patch(lastTrack._id, {
+				scheduledFunctionId,
+			});
+		}
 	},
 });
 
