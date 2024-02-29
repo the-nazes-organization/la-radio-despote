@@ -1,4 +1,3 @@
-import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
 import { useSearchSongs } from '@/lib/providers/react-query/queries';
 import { useDebounce } from '@/lib/use-debounce';
 import { Music } from 'lucide-react';
@@ -17,8 +16,6 @@ import {
 	DialogTrigger,
 } from './ui/dialog';
 import { Input } from './ui/input';
-
-const sdk = useSpotifyPlayerStore.getState().sdk;
 
 interface AddTrackModalButtonProps
 	extends React.ButtonHTMLAttributes<HTMLButtonElement> {
