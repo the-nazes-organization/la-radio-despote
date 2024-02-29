@@ -5,13 +5,15 @@ import { api } from 'server';
 import { TypographyLarge, TypographyMuted } from './typography';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
-interface NavbarProps {
+interface NavbarProps extends React.HTMLProps<NavbarProps> {
 	rooms: FunctionReturnType<typeof api.external.rooms.queries.listRooms>;
 }
 
-export const Navbar = ({ rooms }: NavbarProps) => {
+export const Navbar = ({ rooms, className }: NavbarProps) => {
 	return (
-		<nav className="flex flex-col items-center py-4 space-y-3.5">
+		<nav
+			className={`hidden md:flex flex-col items-center py-4 space-y-3.5 ${className}`}
+		>
 			<Link to="/app">
 				<Home />
 			</Link>
