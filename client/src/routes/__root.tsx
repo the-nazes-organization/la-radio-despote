@@ -1,5 +1,5 @@
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { QueryProvider } from '@/lib/providers/QueryProvider';
+import { QueryProvider } from '@/lib/providers/react-query/QueryProvider';
 import { ThemeProvider } from '@/lib/providers/ThemeProvider';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import ConvexClientProvider from '../lib/providers/ConvexProvider';
