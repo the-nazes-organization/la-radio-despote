@@ -11,6 +11,7 @@ import { useMutation, usePreloadedQuery } from 'convex/react';
 
 import { AddTrackButton } from '@/components/add-track-button';
 import { AddTrackModalButton } from '@/components/add-track-modal';
+import { SpotifyAvatar } from '@/components/spotify-avatar';
 import { CommandMenu } from '@/components/ui/command-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { X } from 'lucide-react';
@@ -91,19 +92,26 @@ function Radio() {
 											</TypographyMuted>
 										</div>
 									</div>
-									<Button
-										className="ml-auto hidden group-hover:flex rounded-full size-6 text-red-600 hover:bg-red-500 hover:text-white"
-										size={'icon'}
-										variant={'outline'}
-									>
-										<X
-											onClick={async () => {
-												removeTrack({
-													trackId: track._id,
-												});
-											}}
-										/>
-									</Button>
+									<div className="ml-auto flex space-x-2  items-center">
+										{track.askedBy && (
+											<SpotifyAvatar
+												spotifyUser={track.askedBy.spotifyUserProfile}
+											/>
+										)}
+										<Button
+											className="rounded-full size-6 text-red-600 hover:bg-red-500 hover:text-white"
+											size={'icon'}
+											variant={'outline'}
+										>
+											<X
+												onClick={async () => {
+													removeTrack({
+														trackId: track._id,
+													});
+												}}
+											/>
+										</Button>
+									</div>
 								</li>
 							))}
 					</ul>
