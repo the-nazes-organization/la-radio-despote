@@ -1,8 +1,8 @@
 import { Link } from '@tanstack/react-router';
 import { FunctionReturnType } from 'convex/server';
-import { Menu, Music, Users } from 'lucide-react';
+import { Home, Menu, Music, Users } from 'lucide-react';
 import { api } from 'server';
-import { TypographyH2, TypographyLarge, TypographyMuted } from './typography';
+import { TypographyH3, TypographyMuted, TypographySmall } from './typography';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 
 interface MobileSidebarProps {
@@ -17,10 +17,14 @@ export const MobileSidebar = ({ rooms }: MobileSidebarProps) => {
 					'transition hover:opacity-75 md:hidden self-start py-4 mx-auto flex'
 				}
 			>
-				<Menu className=" text-white" />
+				<Menu className=" text-white " />
 			</SheetTrigger>
-			<SheetContent side={'left'} className={'background p-4'}>
-				<TypographyH2>Radios</TypographyH2>
+			<SheetContent side={'left'} className={'background p-4 py-12'}>
+				<Link to="/app" className="flex items-center space-x-2">
+					<Home /> <TypographyH3>Home</TypographyH3>
+				</Link>
+				<hr className="my-6" />
+				<TypographyH3>Radios</TypographyH3>
 				<ul className="space-y-3 pt-4">
 					{rooms.map(room => (
 						<Link
@@ -34,10 +38,12 @@ export const MobileSidebar = ({ rooms }: MobileSidebarProps) => {
 								alt={room.name}
 								className="square-12 rounded min-w-12 self-center"
 							/>
-							<div>
-								<TypographyLarge>{room.name}</TypographyLarge>
+							<div className=" self-center">
+								<TypographySmall className=" line-clamp-1">
+									{room.name}
+								</TypographySmall>
 
-								<TypographyMuted>
+								<TypographyMuted className=" line-clamp-1">
 									<Music className="square-[1em] inline-block mr-1" />
 									{room.playing.spotifyTrackData.name} by{' '}
 									{room.playing.spotifyTrackData.artists[0].name}
