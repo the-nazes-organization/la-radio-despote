@@ -73,3 +73,13 @@ export const useTrackIsLiked = (trackId: string | null | undefined) => {
 		},
 	});
 };
+
+export const useGetPlaylistTracks = (playlistId: string) => {
+	return useQuery({
+		queryKey: ['playlist', playlistId],
+		queryFn: async () => {
+			const playlist = await sdk.playlists.getPlaylist(playlistId);
+			return playlist;
+		},
+	});
+};
