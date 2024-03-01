@@ -12,9 +12,13 @@ export const useSearchSongs = ({ trackQuery }: { trackQuery: string }) => {
 	return useInfiniteQuery({
 		initialPageParam: 0,
 		queryKey: ['searchSongs', trackQuery],
-		queryFn: async ({ pageParam = 0 }: { pageParam: number }) => {
+		queryFn: async ({ pageParam }: { pageParam: number }) => {
 			if (!trackQuery.length) {
-				return;
+				return {
+					items: [],
+					offset: 0,
+					total: 0,
+				};
 			}
 			const elementsFound = await sdk.search(
 				trackQuery,
@@ -23,10 +27,12 @@ export const useSearchSongs = ({ trackQuery }: { trackQuery: string }) => {
 				10,
 				pageParam,
 			);
-			return elementsFound.tracks.items;
+			return {
+				...elementsFound.tracks,
+			};
 		},
-		getNextPageParam: lastPage => {
-			return lastPage?.length ?? 0;
+		getNextPageParam: tracks => {
+			return tracks.offset + tracks.items.length;
 		},
 	});
 };

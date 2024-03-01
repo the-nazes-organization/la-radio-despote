@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { Id } from 'server/functions/_generated/dataModel';
 import { AddTrackButton } from './add-track-button';
+import { TrackSkeleton } from './skeleton/track-skeleton';
 import { TypographyMuted } from './typography';
 import { Button } from './ui/button';
 import {
@@ -32,9 +33,10 @@ export const AddTrackModalButton = ({
 
 	const { ref, inView } = useInView();
 
-	const { data, error, fetchNextPage, isLoading } = useSearchSongs({
-		trackQuery: debouncedTrackQuery,
-	});
+	const { data, error, fetchNextPage, isLoading, isFetchingNextPage } =
+		useSearchSongs({
+			trackQuery: debouncedTrackQuery,
+		});
 
 	useEffect(() => {
 		if (inView) {
@@ -63,18 +65,22 @@ export const AddTrackModalButton = ({
 				/>
 				<div className=" overflow-auto max-h-80">
 					<ul className="space-y-2">
-						{isLoading && <div>Loading...</div>}
+						{isLoading &&
+							Array.from({ length: 6 }).map((_, index) => (
+								<TrackSkeleton key={index} />
+							))}
+
 						{error && <div>Error: {error.message}</div>}
 						{!isLoading && !data && !error && <div>No results</div>}
-						{data?.pages?.map((track, index) =>
-							track ? (
+						{data?.pages?.map((tracks, index) =>
+							tracks ? (
 								<React.Fragment key={`feed-page-${index}`}>
-									{track.map(track => (
+									{tracks.items.map(track => (
 										<li key={track.id} className=" flex items-center">
 											<div className="grid grid-cols-[40px_1fr] gap-4 grow">
 												<img
 													src={track.album.images[2].url}
-													className="rounded-md place-self-center="
+													className="rounded-md place-self-center"
 												/>
 
 												<div>
@@ -93,8 +99,12 @@ export const AddTrackModalButton = ({
 								</React.Fragment>
 							) : null,
 						)}
+						{isFetchingNextPage &&
+							Array.from({ length: 6 }).map((_, index) => (
+								<TrackSkeleton key={index} />
+							))}
 
-						<div ref={ref}></div>
+						<div ref={ref} className="size-2"></div>
 					</ul>
 				</div>
 			</DialogContent>
