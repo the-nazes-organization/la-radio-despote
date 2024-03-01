@@ -1,4 +1,4 @@
-import { SpotifyApi } from '@spotify/web-api-ts-sdk';
+import { SpotifyApi, UserProfile } from '@spotify/web-api-ts-sdk';
 import { create } from 'zustand';
 
 interface SpotifyPlayerState {
@@ -11,6 +11,7 @@ interface SpotifyPlayerState {
 		setPlayerDisabled: (isPlayerDisabled: boolean) => void;
 		play: (args: { spotifyId: string; positionMs: number }) => void;
 	};
+	userProfile: UserProfile | null;
 }
 
 export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
@@ -76,9 +77,12 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerState>()((
 		});
 
 		player.connect();
+
+		sdk.currentUser.profile().then(userProfile => set({ userProfile }));
 	};
 
 	return {
+		userProfile: null,
 		sdk,
 		player: null,
 		state: null,
