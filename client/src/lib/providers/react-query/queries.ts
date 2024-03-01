@@ -91,7 +91,9 @@ export const useGetUserPlaylists = (userProfileId: UserProfile['id']) => {
 		queryFn: async () => {
 			const playlists = await sdk.currentUser.playlists.playlists();
 			userProfileId;
-			return playlists.items;
+			return playlists.items.filter(
+				playlist => playlist.tracks?.total && playlist.tracks?.total > 0,
+			);
 		},
 	});
 };
