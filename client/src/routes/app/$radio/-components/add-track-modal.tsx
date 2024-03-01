@@ -26,7 +26,7 @@ export const AddTrackModalButton = ({
 }: AddTrackModalButtonProps) => {
 	const userProfile = useSpotifyPlayerStore(store => store.userProfile);
 
-	const [tab, setTab] = useState<'search' | 'playlists'>('playlists');
+	const [tab, setTab] = useState<'search' | 'playlists'>('search');
 
 	return (
 		<Dialog>
