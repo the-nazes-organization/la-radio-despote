@@ -1,3 +1,4 @@
+import { UserProfile } from '@spotify/web-api-ts-sdk';
 import {
 	useInfiniteQuery,
 	useMutation,
@@ -80,6 +81,17 @@ export const useGetPlaylistTracks = (playlistId: string) => {
 		queryFn: async () => {
 			const playlist = await sdk.playlists.getPlaylist(playlistId);
 			return playlist;
+		},
+	});
+};
+
+export const useGetUserPlaylists = (userProfileId: UserProfile['id']) => {
+	return useQuery({
+		queryKey: ['userPlaylists', userProfileId],
+		queryFn: async () => {
+			const playlists = await sdk.currentUser.playlists.playlists();
+			userProfileId;
+			return playlists.items;
 		},
 	});
 };
