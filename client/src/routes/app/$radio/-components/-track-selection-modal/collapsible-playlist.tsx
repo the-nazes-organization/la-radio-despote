@@ -29,10 +29,12 @@ export const CollapsiblePlaylist = ({ playlist }: CollapsiblePlaylistProps) => {
 			<div className={cn('sticky top-0 bg-background', isOpen && 'py-2')}>
 				<CollapsibleTrigger asChild>
 					<div className="grid grid-cols-[40px_auto_20px] gap-4 max-w-md">
-						<img
-							src={playlist.images[0].url}
-							className="rounded-md place-self-center size-10"
-						/>
+						{playlist.images[0]?.url ? (
+							<img
+								src={playlist.images[0]?.url}
+								className="rounded-md place-self-center size-10"
+							/>
+						) : null}
 
 						<div className="shrink">
 							<div className="text-sm line-clamp-1">{playlist.name}</div>
