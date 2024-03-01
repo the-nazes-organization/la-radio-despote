@@ -29,7 +29,7 @@ export const AddTrackModalButton = ({
 	const [tab, setTab] = useState<'search' | 'playlists'>('playlists');
 
 	return (
-		<Dialog defaultOpen={true}>
+		<Dialog>
 			<DialogTrigger asChild className={classname}>
 				<Button className="md:space-x-2">
 					<span className="hidden md:block">Add a track</span>
