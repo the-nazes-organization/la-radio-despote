@@ -10,7 +10,6 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { usePreloadedQuery } from 'convex/react';
 
 import { AddTrackButton } from '@/components/add-track-button';
-import { AddTrackModalButton } from '@/components/add-track-modal';
 import { SpotifyAvatar } from '@/components/spotify-avatar';
 import { CommandMenu } from '@/components/ui/command-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -18,6 +17,7 @@ import { useAuthedMutation } from '@/lib/useAuthedMutation';
 import { X } from 'lucide-react';
 import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
+import { AddTrackModalButton } from './-components/add-track-modal';
 import { PlayerDisplay } from './-components/player-display';
 
 export const Route = createFileRoute('/app/$radio/')({
