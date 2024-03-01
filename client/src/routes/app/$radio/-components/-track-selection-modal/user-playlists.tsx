@@ -12,7 +12,7 @@ export const UserPlaylists = ({ userProfile }: UserPlaylistsProps) => {
 
 	return (
 		<ScrollArea className=" max-h-96 ">
-			<ul className="space-y-2  contents">
+			<ul className="space-y-2 ">
 				{playlists?.map(playlist => (
 					<li key={playlist.id} className="mr-20">
 						<CollapsiblePlaylist playlist={playlist} />

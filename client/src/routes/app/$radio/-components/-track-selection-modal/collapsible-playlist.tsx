@@ -25,7 +25,7 @@ export const CollapsiblePlaylist = ({ playlist }: CollapsiblePlaylistProps) => {
 	const { data: playlistTracks, isLoading } = useGetPlaylistTracks(playlist.id);
 
 	return (
-		<Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-2">
+		<Collapsible open={isOpen} onOpenChange={setIsOpen}>
 			<div className={cn('sticky top-0 bg-background', isOpen && 'py-2')}>
 				<CollapsibleTrigger asChild>
 					<div className="grid grid-cols-[40px_auto_20px] gap-4 max-w-md">
@@ -53,7 +53,7 @@ export const CollapsiblePlaylist = ({ playlist }: CollapsiblePlaylistProps) => {
 
 				{playlist && (
 					<ul className="space-y-2">
-						{playlistTracks?.tracks.items.map(({ track }) => (
+						{playlistTracks?.tracks.items?.map(({ track }) => (
 							<li
 								key={track.id}
 								className="px-2 py-1 rounded flex items-center bg-secondary hover:bg-secondary/20"

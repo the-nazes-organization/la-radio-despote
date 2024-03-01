@@ -41,14 +41,14 @@ export const TrackSearch = ({ roomId }: TrackSearchProps) => {
 				onChange={e => setTrackQuery(e.target.value)}
 			/>
 			<ScrollArea className=" max-h-80">
-				<ul className="space-y-2">
+				{error && <div>Error: {error.message}</div>}
+				{!isLoading && !data && !error && <div>No results</div>}
+				<ul className="space-y-2 max-w-md">
 					{isLoading &&
 						Array.from({ length: 6 }).map((_, index) => (
 							<TrackSkeleton key={index} />
 						))}
 
-					{error && <div>Error: {error.message}</div>}
-					{!isLoading && !data && !error && <div>No results</div>}
 					{data?.pages?.map((tracks, index) =>
 						tracks ? (
 							<React.Fragment key={`feed-page-${index}`}>
