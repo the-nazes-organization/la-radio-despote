@@ -1,9 +1,5 @@
-import { AddTrackButton } from '@/components/add-track-button';
-import { TrackDisplay } from '@/components/track-display';
 import { TypographyMuted } from '@/components/typography';
-import { useGetPlaylistTracks } from '@/lib/providers/react-query/queries';
 import { cn } from '@/lib/utils';
-import { Route } from '@/routes/app/$radio';
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -12,17 +8,14 @@ import {
 import { SimplifiedPlaylist } from '@spotify/web-api-ts-sdk';
 import { ChevronDown, ChevronLeft } from 'lucide-react';
 import React from 'react';
-import { Id } from 'server/functions/_generated/dataModel';
+import { TracksList } from './tracks-list';
 
 interface CollapsiblePlaylistProps {
 	playlist: SimplifiedPlaylist;
 }
 
 export const CollapsiblePlaylist = ({ playlist }: CollapsiblePlaylistProps) => {
-	const params = Route.useParams<{ radio: Id<'rooms'> }>();
 	const [isOpen, setIsOpen] = React.useState(false);
-
-	const { data: playlistTracks, isLoading } = useGetPlaylistTracks(playlist.id);
 
 	return (
 		<Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -49,24 +42,7 @@ export const CollapsiblePlaylist = ({ playlist }: CollapsiblePlaylistProps) => {
 				</CollapsibleTrigger>
 			</div>
 			<CollapsibleContent className="space-y-2">
-				{isLoading && <div>Loading...</div>}
-
-				{playlist && (
-					<ul className="space-y-2">
-						{playlistTracks?.tracks.items?.map(({ track }) => (
-							<li
-								key={track.id}
-								className="px-2 py-1 rounded flex items-center bg-secondary hover:bg-secondary/20"
-							>
-								<TrackDisplay track={track} />
-								<AddTrackButton
-									roomId={params.radio}
-									spotifyTrackId={track.id}
-								/>
-							</li>
-						)) ?? []}
-					</ul>
-				)}
+				{isOpen && <TracksList playlistId={playlist.id} />}
 			</CollapsibleContent>
 		</Collapsible>
 	);
