@@ -51,7 +51,7 @@ export const TrackSearch = ({ roomId }: TrackSearchProps) => {
 
 					{data?.pages?.map((tracks, index) =>
 						tracks ? (
-							<React.Fragment key={`feed-page-${index}`}>
+							<React.Fragment key={`tracks-page-${index}`}>
 								{tracks.items.map(track => (
 									<li key={track.id} className=" flex items-center">
 										<TrackDisplay track={track} />
