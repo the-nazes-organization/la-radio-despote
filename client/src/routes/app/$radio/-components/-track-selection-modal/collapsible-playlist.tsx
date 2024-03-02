@@ -29,11 +29,13 @@ export const CollapsiblePlaylist = ({ playlist }: CollapsiblePlaylistProps) => {
 							/>
 						) : null}
 
-						<div className="shrink">
+						<div className="shrink self-center">
 							<div className="text-sm line-clamp-1">{playlist.name}</div>
-							<TypographyMuted className="text-xs line-clamp-1">
-								{playlist.description}
-							</TypographyMuted>
+							{playlist.description && (
+								<TypographyMuted className="text-xs line-clamp-1">
+									{playlist.description}
+								</TypographyMuted>
+							)}
 						</div>
 						<div className="ml-auto">
 							{isOpen ? <ChevronDown size={24} /> : <ChevronLeft size={24} />}
