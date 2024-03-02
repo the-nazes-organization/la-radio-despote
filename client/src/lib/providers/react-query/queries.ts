@@ -75,12 +75,36 @@ export const useTrackIsLiked = (trackId: string | null | undefined) => {
 	});
 };
 
-export const useGetPlaylistTracks = (playlistId: string) => {
-	return useQuery({
+export const useGetPlaylistTracks = ({
+	playlistId,
+}: {
+	playlistId: 'savedTracks' | string;
+}) => {
+	return useInfiniteQuery({
+		initialPageParam: 0,
 		queryKey: ['playlist', playlistId],
-		queryFn: async () => {
-			const playlist = await sdk.playlists.getPlaylist(playlistId);
-			return playlist;
+		queryFn: async ({ pageParam }: { pageParam: number }) => {
+			if (playlistId === 'savedTracks') {
+				const savedTracks = await sdk.currentUser.tracks.savedTracks(
+					20,
+					pageParam,
+				);
+				return savedTracks;
+			} else {
+				const playlistItems = await sdk.playlists.getPlaylistItems(
+					playlistId,
+					undefined,
+					undefined,
+					20,
+					pageParam,
+				);
+				return playlistItems;
+			}
+		},
+		getNextPageParam: tracks => {
+			return tracks.items.length
+				? tracks.offset + tracks.items.length
+				: undefined;
 		},
 	});
 };
@@ -90,7 +114,6 @@ export const useGetUserPlaylists = (userProfileId: UserProfile['id']) => {
 		queryKey: ['userPlaylists', userProfileId],
 		queryFn: async () => {
 			const playlists = await sdk.currentUser.playlists.playlists();
-			userProfileId;
 			return playlists.items.filter(
 				playlist => playlist.tracks?.total && playlist.tracks?.total > 0,
 			);
