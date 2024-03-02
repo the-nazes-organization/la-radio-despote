@@ -1,7 +1,8 @@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useGetUserPlaylists } from '@/lib/providers/react-query/queries';
-import { CollapsiblePlaylist } from '@/routes/app/$radio/-components/-track-selection-modal/collapsible-playlist';
 import { UserProfile } from '@spotify/web-api-ts-sdk';
+import { CollapsiblePlaylist } from './collapsible-playlist';
+import { SavedTracks } from './saved-tracks';
 
 interface UserPlaylistsProps {
 	userProfile: UserProfile;
@@ -13,6 +14,7 @@ export const UserPlaylists = ({ userProfile }: UserPlaylistsProps) => {
 	return (
 		<ScrollArea className=" max-h-96 ">
 			<ul className="space-y-2 ">
+				<SavedTracks />
 				{playlists?.map(playlist => (
 					<li key={playlist.id} className="mr-20">
 						<CollapsiblePlaylist playlist={playlist} />
