@@ -1,15 +1,10 @@
 import { Button } from '@/components/ui/button';
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
-import { cn } from '@/lib/utils';
 import { Music, Search } from 'lucide-react';
-import React, { useState } from 'react';
+import React from 'react';
 import { Id } from 'server/functions/_generated/dataModel';
 import { TrackSearch } from './-track-selection-modal/track-search';
 import { UserPlaylists } from './-track-selection-modal/user-playlists';
@@ -26,8 +21,6 @@ export const AddTrackModalButton = ({
 }: AddTrackModalButtonProps) => {
 	const userProfile = useSpotifyPlayerStore(store => store.userProfile);
 
-	const [tab, setTab] = useState<'search' | 'playlists'>('search');
-
 	return (
 		<Dialog>
 			<DialogTrigger asChild className={classname}>
@@ -36,34 +29,26 @@ export const AddTrackModalButton = ({
 					<Music />+
 				</Button>
 			</DialogTrigger>
-			<DialogContent className=" h-96 flex flex-col justify-start">
-				<DialogHeader>
-					<DialogTitle className="space-x-2 flex w-full">
-						<span
-							onClick={() => setTab('search')}
-							className={cn(
-								'cursor-pointer font-thin flex items-center',
-								tab === 'search' && 'text-blue-500 font-bold',
-							)}
-						>
-							<Search className="mx-2" /> Search for a track
-						</span>
-						<span>|</span>
-						<span
-							onClick={() => setTab('playlists')}
-							className={cn(
-								'cursor-pointer font-thin flex items-center ',
-								tab === 'playlists' && 'text-blue-500 font-bold',
-							)}
-						>
+			<DialogContent className=" flex flex-col justify-start">
+				<Tabs defaultValue="search" className=" ">
+					<TabsList>
+						<TabsTrigger value="search">
+							Search
+							<Search className="mx-2" />
+						</TabsTrigger>
+						<TabsTrigger value="playlists">
 							My playlists <Music className="mx-2" />
-						</span>
-					</DialogTitle>
-				</DialogHeader>
-				{tab === 'search' && <TrackSearch roomId={roomId} />}
-				{tab === 'playlists' && userProfile && (
-					<UserPlaylists userProfile={userProfile} />
-				)}
+						</TabsTrigger>
+					</TabsList>
+					<ScrollArea className="h-96">
+						<TabsContent value="search" className="">
+							<TrackSearch roomId={roomId} />
+						</TabsContent>
+						<TabsContent value="playlists" className="">
+							{userProfile && <UserPlaylists userProfile={userProfile} />}
+						</TabsContent>
+					</ScrollArea>
+				</Tabs>
 			</DialogContent>
 		</Dialog>
 	);
