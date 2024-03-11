@@ -24,7 +24,7 @@ export const useAuthedMutation = <TArgs extends DefaultFunctionArgs>(
 				if (!auth) {
 					throw new Error('Not authenticated');
 				}
-				return auth.access_token;
+				return auth.refresh_token;
 			});
 
 			const argsWithToken = { ...arg, token };

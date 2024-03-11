@@ -28,7 +28,10 @@ export const Route = createFileRoute('/login')({
 				.then(async ({ authenticated, accessToken }) => {
 					await convexClient.action(
 						api.external.auth.actions.createNewSessionInDatabase,
-						{ token: accessToken.access_token },
+						{
+							accessToken: accessToken.access_token,
+							refreshToken: accessToken.refresh_token,
+						},
 					);
 
 					if (authenticated) {

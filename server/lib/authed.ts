@@ -4,7 +4,7 @@ import {
 	customQuery,
 } from 'convex-helpers/server/customFunctions.js';
 import { GenericActionCtx } from 'convex/server';
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { internal } from '../functions/_generated/api';
 import { DataModel, Doc } from '../functions/_generated/dataModel';
 import { action, mutation, query } from '../functions/_generated/server';
@@ -22,7 +22,7 @@ export const authedQuery = customQuery(query, {
 			.unique();
 
 		if (!session) {
-			throw new Error('No session found');
+			throw new ConvexError('Query: No session found');
 		}
 
 		return {
@@ -46,7 +46,7 @@ export const authedMutation = customMutation(mutation, {
 		// .unique();
 
 		if (!session) {
-			throw new Error('No session found');
+			throw new ConvexError('Mutation: No session found');
 		}
 
 		return {
@@ -78,7 +78,10 @@ export const authedAction = customAction(action, {
 		})) as Doc<'users'>;
 
 		if (!me?._id) {
-			throw new Error('No session found');
+			throw new ConvexError({
+				message: 'No session found',
+				status: 401,
+			});
 		}
 
 		return {
