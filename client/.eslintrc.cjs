@@ -15,12 +15,18 @@ module.exports = {
 		ecmaVersion: 'latest',
 		sourceType: 'module',
 	},
-	plugins: ['react', '@typescript-eslint', 'react-hooks'],
+	plugins: [
+		'react',
+		'@typescript-eslint',
+		'react-hooks',
+		'no-floating-promise',
+	],
 	rules: {
 		'react/prop-types': 'off',
 		'react/react-in-jsx-scope': 'off',
 		'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
 		'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
+		'no-floating-promise/no-floating-promise': 2,
 	},
 	ignorePatterns: [
 		'node_modules',
