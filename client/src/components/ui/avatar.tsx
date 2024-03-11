@@ -62,7 +62,6 @@ const AvatarGroupProvider = ({
 }) => {
 	const [count, setCount] = React.useState<number>(0);
 
-	console.log('AvatarGroupProps', limit, children);
 	return (
 		<AvatarGroupContext.Provider
 			value={{
