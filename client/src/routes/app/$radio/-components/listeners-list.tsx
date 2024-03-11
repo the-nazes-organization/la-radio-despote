@@ -23,7 +23,7 @@ export const ListenersList = ({ listeners }: ListenersListProps) => {
 			<DropdownMenuTrigger asChild>
 				<AvatarGroup limit={3}>
 					<AvatarGroupList>
-						{new Array(5).fill(listeners[0]).map((listener, index) => {
+						{listeners.map((listener, index) => {
 							return (
 								<div key={listener.id + index}>
 									<SpotifyAvatar spotifyUser={listener} />
