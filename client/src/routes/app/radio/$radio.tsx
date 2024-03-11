@@ -8,13 +8,12 @@ import { api } from 'server';
 import { Id } from 'server/functions/_generated/dataModel';
 import { ListenersList } from './$radio/-components/listeners-list';
 
-export const Route = createFileRoute('/app/$radio')({
+export const Route = createFileRoute('/app/radio/$radio')({
 	component: LayoutComponent,
 	loader: async ({ params: { radio } }) => {
 		const preloaded = await preloadQuery(api.external.rooms.queries.get, {
 			roomId: radio as Id<'rooms'>,
 		}).catch(error => {
-			console.log(`👨‍🚒`, error);
 			/**
 			 * If the room doesn't exist, redirect to the home page.
 			 */

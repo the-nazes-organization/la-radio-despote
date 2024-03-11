@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Route } from '@/routes/app/$radio';
+import { Route } from '@/routes/app/radio/$radio';
 import { Link } from '@tanstack/react-router';
 import { FunctionReturnType } from 'convex/server';
 import { Home, Menu, Music, Users } from 'lucide-react';
@@ -42,7 +42,7 @@ export const MobileSidebar = ({ rooms }: MobileSidebarProps) => {
 						return (
 							<Link
 								key={room._id}
-								to="/app/$radio"
+								to="/app/radio/$radio"
 								params={{ radio: room._id }}
 								className={cn(
 									'grid grid-cols-[40px_1fr_auto] gap-4 p-2',

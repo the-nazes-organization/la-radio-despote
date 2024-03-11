@@ -2,7 +2,7 @@ import { AddTrackButton } from '@/components/add-track-button';
 import { TrackSkeleton } from '@/components/skeleton/track-skeleton';
 import { TrackDisplay } from '@/components/track-display';
 import { useGetPlaylistTracks } from '@/lib/providers/react-query/queries';
-import { Route } from '@/routes/app/$radio';
+import { Route } from '@/routes/app/radio/$radio';
 import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { Id } from 'server/functions/_generated/dataModel';

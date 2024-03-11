@@ -1,5 +1,5 @@
 import { useSpotifyPlayerStore } from '@/lib/providers/SpotifyPlayerProvider';
-import { Route } from '@/routes/app/$radio';
+import { Route } from '@/routes/app/radio/$radio';
 import { useNavigate } from '@tanstack/react-router';
 import { useQuery } from 'convex/react';
 import { ListMusic, LogOut } from 'lucide-react';

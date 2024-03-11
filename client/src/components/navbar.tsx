@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Route } from '@/routes/app/$radio';
+import { Route } from '@/routes/app/radio/$radio';
 import { Link } from '@tanstack/react-router';
 import { FunctionReturnType } from 'convex/server';
 import { Home, Music } from 'lucide-react';
@@ -38,7 +38,7 @@ export const Navbar = ({ rooms, className }: NavbarProps) => {
 						>
 							<Link
 								key={room._id}
-								to="/app/$radio"
+								to="/app/radio/$radio"
 								params={{ radio: room._id }}
 							>
 								<img
