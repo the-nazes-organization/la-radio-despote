@@ -37,7 +37,7 @@ export const addUserToRoom = authedMutation({
 				.order('desc')
 				.first();
 
-			if (!lastTrack) return;
+			if (!lastTrack || lastTrack.scheduledFunctionId) return;
 
 			const timeRemaining =
 				lastTrack && lastTrack?.playedAt
