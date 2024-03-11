@@ -29,7 +29,7 @@ export const useAuthedMutation = <TArgs extends DefaultFunctionArgs>(
 
 			const argsWithToken = { ...arg, token };
 
-			actionFunction(
+			return actionFunction(
 				...([argsWithToken] as unknown as OptionalRestArgs<
 					FunctionReference<'mutation', 'public', TArgs>
 				>),
