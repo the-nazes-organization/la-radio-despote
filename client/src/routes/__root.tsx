@@ -1,3 +1,4 @@
+import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { QueryProvider } from '@/lib/providers/react-query/QueryProvider';
 import { ThemeProvider } from '@/lib/providers/ThemeProvider';
@@ -12,6 +13,8 @@ export const Route = createRootRoute({
 				<QueryProvider>
 					<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 						<TooltipProvider delayDuration={0}>
+							<Toaster />
+
 							<Outlet />
 						</TooltipProvider>
 					</ThemeProvider>
