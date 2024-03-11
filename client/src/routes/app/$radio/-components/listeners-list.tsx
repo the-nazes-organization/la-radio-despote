@@ -1,5 +1,9 @@
 import { SpotifyAvatar } from '@/components/spotify-avatar';
-import { Button } from '@/components/ui/button';
+import {
+	AvatarGroup,
+	AvatarGroupList,
+	AvatarOverflowIndicator,
+} from '@/components/ui/avatar';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -7,7 +11,6 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { Users } from 'lucide-react';
 import { Doc } from 'server/functions/_generated/dataModel';
 
 interface ListenersListProps {
@@ -18,9 +21,18 @@ export const ListenersList = ({ listeners }: ListenersListProps) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="icon" className="rounded-full">
-					<Users />
-				</Button>
+				<AvatarGroup limit={3}>
+					<AvatarGroupList>
+						{new Array(5).fill(listeners[0]).map((listener, index) => {
+							return (
+								<div key={listener.id + index}>
+									<SpotifyAvatar spotifyUser={listener} />
+								</div>
+							);
+						})}
+					</AvatarGroupList>
+					<AvatarOverflowIndicator />
+				</AvatarGroup>
 			</DropdownMenuTrigger>
 
 			<DropdownMenuContent
