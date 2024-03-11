@@ -37,14 +37,15 @@ export const addUserToRoom = authedMutation({
 				.order('desc')
 				.first();
 
-			if (!lastTrack || lastTrack.scheduledFunctionId) return;
-			ctx.db.patch(lastTrack._id, {
-				playedAt: Date.now(),
-			});
+			if (!lastTrack) return;
+
+			const timeRemaining = lastTrack
+				? lastTrack.duration - (Date.now() - (lastTrack?.playedAt || 0))
+				: 0;
 
 			// add job to scheduler
 			const scheduledFunctionId = await ctx.scheduler.runAfter(
-				lastTrack.duration,
+				timeRemaining,
 				internal.internal.player.actions.playTrack,
 				{
 					roomId: args.roomId,
