@@ -10,6 +10,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Link } from '@tanstack/react-router';
 
 import { Doc } from 'server/functions/_generated/dataModel';
 
@@ -44,10 +45,15 @@ export const ListenersList = ({ listeners }: ListenersListProps) => {
 				{listeners.map(listener => {
 					return (
 						<DropdownMenuItem key={listener.id}>
-							<div className="flex items-center space-x-2">
+							<Link
+								key={listener.id}
+								to={`/app/user/$user`}
+								params={{ user: listener.id }}
+								className="flex items-center space-x-2"
+							>
 								<SpotifyAvatar spotifyUser={listener} />
 								<span>{listener.display_name}</span>
-							</div>
+							</Link>
 						</DropdownMenuItem>
 					);
 				})}
