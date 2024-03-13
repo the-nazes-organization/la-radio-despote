@@ -39,7 +39,8 @@ export default defineSchema(
 		})
 			.index('by_room_played_at', ['room', 'playedAt'])
 			.index('by_room_played_at_asked_at', ['room', 'playedAt', 'askedAt'])
-			.index('by_played_at', ['playedAt']),
+			.index('by_played_at', ['playedAt'])
+			.index('by_asked_by', ['askedBy']),
 
 		spotifyTrackData: defineTable({
 			duration: v.number(),
@@ -71,10 +72,18 @@ export default defineSchema(
 		}).index('by_spotify_user_id', ['spotifyUserProfile.id']),
 
 		reactions: defineTable({
+			askedBy: v.union(v.id('users'), v.null()),
 			roomId: v.id('rooms'),
 			userId: v.id('users'),
+			spotifyId: v.string(),
 			type: v.union(v.literal('like'), v.literal('dislike')),
-		}).index('by_room', ['roomId']),
+		})
+			.index('by_room', ['roomId'])
+			.index('by_user', ['userId'])
+			.index('by_track', ['spotifyId'])
+			.index('by_user_by_likes', ['userId', 'type'])
+			.index('by_author_by_likes', ['askedBy', 'type'])
+			.index('by_user_by_likes_by_track', ['userId', 'type', 'spotifyId']),
 	},
 
 	{ schemaValidation: false },
