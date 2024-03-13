@@ -1,11 +1,13 @@
 import { Track } from '@spotify/web-api-ts-sdk';
+import { Doc } from 'server/functions/_generated/dataModel';
 import { TypographyMuted } from './typography';
 
 interface TrackDisplayProps {
-	track: Track;
+	track: Track | Doc<'spotifyTrackData'> | null;
 }
 
 export const TrackDisplay = ({ track }: TrackDisplayProps) => {
+	if (!track) return null;
 	return (
 		<div className="grid grid-cols-[40px_1fr] gap-4 grow">
 			<img
