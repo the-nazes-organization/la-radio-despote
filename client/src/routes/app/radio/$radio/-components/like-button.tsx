@@ -18,6 +18,9 @@ export const LikeButton = ({ roomId, playing }: LikeButtonProps) => {
 	const addLikeReaction = useAuthedMutation(
 		api.external.reactions.mutations.addLikeReaction,
 	);
+	const removeLikeReaction = useAuthedMutation(
+		api.external.reactions.mutations.removeLikeReaction,
+	);
 
 	const { data: isLiked } = useTrackIsLiked(playing.spotifyTrackData.spotifyId);
 
@@ -27,7 +30,15 @@ export const LikeButton = ({ roomId, playing }: LikeButtonProps) => {
 		if (!playing.spotifyTrackData.spotifyId || isLiked === undefined) return;
 		likeTrack({ isLiked, trackId: playing.spotifyTrackData.spotifyId });
 		if (!isLiked) {
-			addLikeReaction({ roomId });
+			addLikeReaction({
+				roomId,
+				trackId: playing._id,
+				askedBy: playing.askedBy || null,
+			});
+		} else {
+			removeLikeReaction({
+				trackId: playing._id,
+			});
 		}
 	};
 
